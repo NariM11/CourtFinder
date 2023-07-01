@@ -7,7 +7,7 @@ const tennisCourts = [
     courtNumber: 1,
     available: true,
     waitingListParties: 2,
-    estimatedWaitTime: "30 minutes",
+    estimatedWaitTime: "100 minutes",
   },
   {
     courtNumber: 2,
