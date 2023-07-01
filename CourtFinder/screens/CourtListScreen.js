@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
 
 // Sample data for tennis courts
 const tennisCourts = [
@@ -83,6 +83,13 @@ const CourtList = () => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Image
+          source={require("../resources/logo_green.png")} // Replace with the path to your logo image
+          style={styles.logo}
+        />
+        <Text style={styles.title}>Tennis Court Availability</Text>
+      </View>
       <FlatList
         data={tennisCourts}
         renderItem={renderItem}
@@ -97,6 +104,20 @@ const styles = {
   container: {
     flex: 1,
     padding: 16,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 8,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
   },
   listContainer: {
     paddingBottom: 16,
