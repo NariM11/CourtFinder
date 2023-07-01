@@ -85,11 +85,14 @@ const CourtList = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require("../resources/logo_green.png")} // Replace with the path to your logo image
+          source={require("../assets/logo_green.png")} // Replace with the path to your logo image
           style={styles.logo}
         />
-        <Text style={styles.title}>Tennis Court Availability</Text>
+        {/* <Text style={styles.title}>Tennis Court Availability</Text> */}
       </View>
+      {/* <View style={styles.header}> */}
+      <Text style={styles.title}>SELECT COURT</Text>
+      {/* </View> */}
       <FlatList
         data={tennisCourts}
         renderItem={renderItem}
@@ -109,15 +112,18 @@ const styles = {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
+    justifyContent: "center",
   },
   logo: {
-    width: 50,
-    height: 50,
+    width: 200,
+    height: 200,
     marginRight: 8,
+    justifyContent: "center",
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
+    textAlign: "left",
   },
   listContainer: {
     paddingBottom: 16,
