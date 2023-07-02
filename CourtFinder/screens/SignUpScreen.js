@@ -12,7 +12,8 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 
-const LoginScreen = () => {
+const SignUpScreen = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -35,7 +36,14 @@ const LoginScreen = () => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
-          <Text style={logInText}>LOG IN</Text>
+          <Text style={logInText}>SIGN UP</Text>
+          <TextInput
+            placeholder="Name"
+            placeholderTextColor={`white`}
+            // value = { }
+            onChangeText={(text) => setName(text)}
+            style={input}
+          ></TextInput>
           <TextInput
             placeholder="Email"
             placeholderTextColor={`white`}
@@ -146,4 +154,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SignUpScreen;

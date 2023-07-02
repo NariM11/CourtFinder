@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Modal,
+} from "react-native";
 
 // Sample data for tennis courts
 const tennisCourts = [
@@ -11,7 +18,7 @@ const tennisCourts = [
   },
   {
     courtNumber: 2,
-    available: false,
+    available: true,
     waitingListParties: 1,
     estimatedWaitTime: "15 minutes",
   },
@@ -51,13 +58,11 @@ const tennisCourts = [
 const CourtList = () => {
   const [selectedCourt, setSelectedCourt] = useState(null);
 
-  // Render function for each tennis court item
   const renderItem = ({ item }) => {
     const isSelected = selectedCourt === item.courtNumber;
 
     return (
-      <TouchableOpacity
-        onPress={() => setSelectedCourt(item.courtNumber)}
+      <View
         style={[
           styles.courtContainer,
           isSelected && styles.selectedCourtContainer,
@@ -66,18 +71,28 @@ const CourtList = () => {
         <Text
           style={[styles.courtNumber, isSelected && styles.selectedCourtNumber]}
         >
-          Court {item.courtNumber}
-        </Text>
-        <Text style={styles.available}>
-          {item.available ? "Available" : "Currently in Use"}
+          Court # {item.courtNumber}
         </Text>
         <Text style={styles.waitingListParties}>
-          {item.waitingListParties} Parties in Waiting List
+          {item.waitingListParties} PARTIES IN WAITING LIST
         </Text>
         <Text style={styles.estimatedWaitTime}>
-          Estimated Wait Time: {item.estimatedWaitTime}
+          ESTIMATED TIME: {item.estimatedWaitTime}
         </Text>
-      </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              item.available ? styles.availableButton : styles.waitlistButton,
+            ]}
+            disabled
+          >
+            <Text style={styles.buttonText}>
+              {item.available ? "AVAILABLE" : "WAITLIST"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   };
 
@@ -85,14 +100,12 @@ const CourtList = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require("../assets/logo_green.png")} // Replace with the path to your logo image
+          source={require("../assets/logo_green.png")}
           style={styles.logo}
         />
-        {/* <Text style={styles.title}>Tennis Court Availability</Text> */}
       </View>
-      {/* <View style={styles.header}> */}
       <Text style={styles.title}>SELECT COURT</Text>
-      {/* </View> */}
+      <View style={styles.titleSpacing} />
       <FlatList
         data={tennisCourts}
         renderItem={renderItem}
@@ -125,34 +138,57 @@ const styles = {
     fontWeight: "bold",
     textAlign: "left",
   },
+  titleSpacing: {
+    marginBottom: 40, // Add spacing between the title and the court list
+  },
   listContainer: {
     paddingBottom: 16,
   },
   courtContainer: {
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "rgba(185, 239, 55, 0.4)", // Set the background color with opacity
     borderRadius: 8,
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 50,
+    marginRight: 20,
+    marginL: 20,
+    // TouchableOpacity: 0.5,
   },
-  selectedCourtContainer: {
-    backgroundColor: "#C0C0C0",
-  },
+  // selectedCourtContainer: {
+  //   backgroundColor: "#C0C0C0",
+  // },
   courtNumber: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
   },
   selectedCourtNumber: {
     color: "#FFFFFF",
   },
-  available: {
-    marginTop: 8,
-    color: "#008000",
-  },
+
   waitingListParties: {
     marginTop: 8,
   },
   estimatedWaitTime: {
     marginTop: 8,
+  },
+  buttonContainer: {
+    alignItems: "flex-end", // Align the button to the right
+    marginTop: 16,
+    marginL: "auto",
+  },
+  button: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 4,
+  },
+  availableButton: {
+    backgroundColor: "#B9EF37",
+  },
+  waitlistButton: {
+    backgroundColor: "#EFBB37",
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
   },
 };
 
