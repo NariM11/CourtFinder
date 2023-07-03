@@ -12,10 +12,38 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 
-const SignUpScreen = () => {
-  const [name, setName] = useState("");
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const SignUpScreen = ({ navigation }) => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const onSubmitForm = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, password }),
+      });
+
+      // Handle the response from the server
+      if (response.ok) {
+        // Request was successful
+        const data = await response.json();
+        navigation.navigate("Courts");
+        console.log(data); // Example: store the authentication token or redirect to another page
+      } else {
+        // Request was not successful
+        const errorData = await response.json();
+        console.error(errorData); // Example: display error message to the user
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   const {
     container,
@@ -36,12 +64,19 @@ const SignUpScreen = () => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
-          <Text style={logInText}>SIGN UP</Text>
+          {/* <Text style={logInText}>SIGN UP</Text> */}
           <TextInput
-            placeholder="Name"
+            placeholder="First Name"
             placeholderTextColor={`white`}
             // value = { }
-            onChangeText={(text) => setName(text)}
+            onChangeText={(text) => setFirstName(text)}
+            style={input}
+          ></TextInput>
+          <TextInput
+            placeholder="Last Name"
+            placeholderTextColor={`white`}
+            // value = { }
+            onChangeText={(text) => setLastName(text)}
             style={input}
           ></TextInput>
           <TextInput
@@ -62,21 +97,16 @@ const SignUpScreen = () => {
         </View>
 
         <View style={buttonContainer}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               console.log("test");
             }}
             style={button}
           >
             <Text style={buttonText}>LOGIN</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              console.log("test");
-            }}
-            style={[button, buttonOutline]}
-          >
-            <Text style={[buttonOutlineText]}>SIGN UP</Text>
+          </TouchableOpacity> */}
+          <TouchableOpacity onPress={onSubmitForm} style={button}>
+            <Text style={buttonText}>SIGN UP</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -93,10 +123,10 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 50,
   },
   inputContainer: {
     width: "80%",
+    marginTop: 30,
   },
 
   input: {

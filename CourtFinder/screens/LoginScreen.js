@@ -12,9 +12,36 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 
-const LoginScreen = () => {
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const onSubmitForm = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      // Handle the response from the server
+      if (response.ok) {
+        // Request was successful
+        const data = await response.json();
+        navigation.navigate("Courts");
+        console.log(data); // Example: store the authentication token or redirect to another page
+      } else {
+        // Request was not successful
+        const errorData = await response.json();
+        console.error(errorData); // Example: display error message to the user
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   const {
     container,
@@ -35,7 +62,7 @@ const LoginScreen = () => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
-          <Text style={logInText}>LOG IN</Text>
+          {/* <Text style={logInText}>LOG IN PAGE</Text> */}
           <TextInput
             placeholder="Email"
             placeholderTextColor={`white`}
@@ -54,22 +81,17 @@ const LoginScreen = () => {
         </View>
 
         <View style={buttonContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              console.log("test");
-            }}
-            style={button}
-          >
-            <Text style={buttonText}>LOGIN</Text>
+          <TouchableOpacity onPress={onSubmitForm} style={button}>
+            <Text style={buttonText}>LOG IN</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               console.log("test");
             }}
             style={[button, buttonOutline]}
           >
             <Text style={[buttonOutlineText]}>SIGN UP</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

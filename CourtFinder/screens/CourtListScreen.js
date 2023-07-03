@@ -1,62 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   FlatList,
   TouchableOpacity,
   Image,
+  Alert,
   Modal,
+  Pressable,
 } from "react-native";
 
-// Sample data for tennis courts
-const tennisCourts = [
-  {
-    courtNumber: 1,
-    available: true,
-    waitingListParties: 2,
-    estimatedWaitTime: "100 minutes",
-  },
-  {
-    courtNumber: 2,
-    available: true,
-    waitingListParties: 1,
-    estimatedWaitTime: "15 minutes",
-  },
-  {
-    courtNumber: 3,
-    available: false,
-    waitingListParties: 1,
-    estimatedWaitTime: "15 minutes",
-  },
-  {
-    courtNumber: 4,
-    available: false,
-    waitingListParties: 1,
-    estimatedWaitTime: "15 minutes",
-  },
-  {
-    courtNumber: 5,
-    available: false,
-    waitingListParties: 1,
-    estimatedWaitTime: "15 minutes",
-  },
-  {
-    courtNumber: 6,
-    available: false,
-    waitingListParties: 1,
-    estimatedWaitTime: "15 minutes",
-  },
-  {
-    courtNumber: 7,
-    available: false,
-    waitingListParties: 1,
-    estimatedWaitTime: "15 minutes",
-  },
-  // Add more tennis court objects as needed
-];
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const CourtList = () => {
+const CourtList = ({ navigation }) => {
+  const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchCourts = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/getcourts");
+        const data = await response.json();
+
+        // Parse and transform the data to match the desired naming convention
+        const parsedCourts = data.map((court) => ({
+          courtNumber: court.court_id,
+          available: court.court_status === "available",
+          waitingListParties: court.num_parties_waiting,
+          estimatedWaitTime: `${court.time_remaining} minutes`,
+        }));
+
+        setCourts(parsedCourts);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCourts();
+  }, []);
 
   const renderItem = ({ item }) => {
     const isSelected = selectedCourt === item.courtNumber;
@@ -81,11 +64,15 @@ const CourtList = () => {
         </Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
+            onPress={() => {
+              // navigation.navigate("Court Details");
+              setModalVisible(true);
+              console.log("test");
+            }}
             style={[
               styles.button,
               item.available ? styles.availableButton : styles.waitlistButton,
             ]}
-            disabled
           >
             <Text style={styles.buttonText}>
               {item.available ? "AVAILABLE" : "WAITLIST"}
@@ -107,11 +94,35 @@ const CourtList = () => {
       <Text style={styles.title}>SELECT COURT</Text>
       <View style={styles.titleSpacing} />
       <FlatList
-        data={tennisCourts}
+        data={courts}
         renderItem={renderItem}
         keyExtractor={(item) => item.courtNumber.toString()}
         contentContainerStyle={styles.listContainer}
       />
+
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Hello World!</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}
+              >
+                <Text style={styles.textStyle}>Hide Modal</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 };
@@ -189,6 +200,48 @@ const styles = {
   buttonText: {
     color: "#FFFFFF",
     fontWeight: "bold",
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
 };
 

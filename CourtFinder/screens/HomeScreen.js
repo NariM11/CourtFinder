@@ -12,7 +12,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const HomeScreen = () => {
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const HomeScreen = ({ navigation }) => {
   const {
     container,
     seawall,
@@ -69,6 +72,7 @@ const HomeScreen = () => {
         <View style={buttonContainer}>
           <TouchableOpacity
             onPress={() => {
+              navigation.navigate("Login");
               console.log("test");
             }}
             style={button}
@@ -77,6 +81,7 @@ const HomeScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
+              navigation.navigate("Sign Up");
               console.log("test");
             }}
             style={[button, buttonOutline]}

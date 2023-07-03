@@ -14,11 +14,14 @@ CREATE TABLE bookings (
     user_email VARCHAR(255) REFERENCES users (email),
     court_id SERIAL REFERENCES courts (court_id),
     booking_datetime TIMESTAMP,
-    status VARCHAR(255) CHECK (status IN ('checked in', 'waiting list'))
+    booking_type VARCHAR(255) CHECK (status IN ('checked in', 'waiting list'))
 );
 
 -- Create courts table
 CREATE TABLE courts (
     court_id SERIAL PRIMARY KEY,
-    current_status VARCHAR(255)
+    court_status VARCHAR(255) CHECK (status IN ('available', 'waiting list'))
+    num_parties_waiting integer;
+    time_remaining integer;
 );
+
