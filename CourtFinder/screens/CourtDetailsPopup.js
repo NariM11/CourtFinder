@@ -14,7 +14,7 @@ const CourtDetailsPopup = ({ navigation }) => {
   return (
     <View style={styles.centeredView}>
       <Modal
-        animationType="slide"
+        animationType="none"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -24,12 +24,23 @@ const CourtDetailsPopup = ({ navigation }) => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
+            {/* {item.courtNumber} */}
+            <Text style={styles.courtText}>Court #86855</Text>
+
+            {/* {item.available ? "AVAILABLE" : "WAITLIST"} */}
+            <Text style={styles.statusText}>AVAILABLE</Text>
+
+            {/* {item.waitingListParties} */}
+            <Text style={styles.waitListText}>0 PARTIES IN WAITING LIST</Text>
+
+            {/* {item.estimatedWaitTime} */}
+            <Text style={styles.waitTimeText}>ESTIMATED TIME: 0</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
+              onPressIn={() => navigation.navigate("Check In")}
+              onPress={() => setModalVisible(false)}
             >
-              <Text style={styles.textStyle}>Hide Modal</Text>
+              <Text style={styles.textStyle}>CHECK IN </Text>
             </Pressable>
           </View>
         </View>
@@ -53,10 +64,10 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#B9EF37",
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
+    alignItems: "left",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -67,24 +78,46 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
     padding: 10,
     elevation: 2,
+    alignSelf: "center",
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "black",
   },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
   },
-  modalText: {
+  courtText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 15,
+  },
+
+  statusText: {
+    fontSize: 20,
+    marginBottom: 50,
+    textAlign: "center",
+    color: "white",
+  },
+
+  waitListText: {
+    fontSize: 15,
     marginBottom: 15,
     textAlign: "center",
+    color: "black",
+  },
+
+  waitTimeText: {
+    fontSize: 15,
+    marginBottom: 60,
+    textAlign: "center",
+    color: "black",
   },
 });
 

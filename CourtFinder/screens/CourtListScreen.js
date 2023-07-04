@@ -13,6 +13,8 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+import CourtDetailsPopup from "./CourtDetailsPopup";
+
 const CourtList = ({ navigation }) => {
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(null);
@@ -84,6 +86,7 @@ const CourtList = ({ navigation }) => {
   };
 
   return (
+    // replace with <CourtDetailsPopUp/> and import at top
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
@@ -102,7 +105,7 @@ const CourtList = ({ navigation }) => {
 
       <View style={styles.centeredView}>
         <Modal
-          animationType="slide"
+          animationType="none"
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => {
@@ -112,16 +115,33 @@ const CourtList = ({ navigation }) => {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hello World!</Text>
+              {/* {item.courtNumber} */}
+              <Text style={styles.courtText}>Court #86855</Text>
+
+              {/* {item.available ? "AVAILABLE" : "WAITLIST"} */}
+              <Text style={styles.statusText}>AVAILABLE</Text>
+
+              {/* {item.waitingListParties} */}
+              <Text style={styles.waitListText}>0 PARTIES IN WAITING LIST</Text>
+
+              {/* {item.estimatedWaitTime} */}
+              <Text style={styles.waitTimeText}>ESTIMATED TIME: 0</Text>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
+                onPressIn={() => navigation.navigate("Check In")}
+                onPress={() => setModalVisible(false)}
               >
-                <Text style={styles.textStyle}>Hide Modal</Text>
+                <Text style={styles.textStyle}>CHECK IN </Text>
               </Pressable>
             </View>
           </View>
         </Modal>
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.textStyle}>Show Modal</Text>
+        </Pressable>
       </View>
     </View>
   );
