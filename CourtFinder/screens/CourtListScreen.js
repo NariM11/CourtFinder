@@ -84,6 +84,7 @@ const CourtList = ({ navigation }) => {
   };
 
   return (
+    // replace with <CourtDetailsPopUp/> and import at top
     <View style={styles.container}>
       <View style={styles.header}>
         <Image

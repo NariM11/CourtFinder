@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@react-navigation/native-stack": "^6.9.12",
-    "@types/react": "^18.2.12",
-    "@types/react-dom": "^18.2.5",
+    "@types/react": "~18.0.27",
+    "@types/react-dom": "~18.0.10",
     "expo": "~48.0.18",
     "expo-status-bar": "~1.4.4",
     "firebase": "^9.22.2",
