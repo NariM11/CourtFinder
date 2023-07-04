@@ -18,7 +18,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Group>
-          {/* <Stack.Screen
+          <Stack.Screen
             options={{ headerShown: true }}
             name="Home"
             component={HomeScreen}
@@ -34,13 +34,13 @@ export default function App() {
             options={{ headerShown: true }}
             name="Sign Up"
             component={SignUpScreen}
-          /> */}
+          />
 
-          {/* <Stack.Screen
+          <Stack.Screen
             options={{ headerShown: true }}
             name="Courts"
             component={CourtListScreen}
-          /> */}
+          />
         </Stack.Group>
 
         <Stack.Group screenOptions={{ presentation: "modal" }}>
