@@ -115,6 +115,18 @@ const CourtList = ({ navigation }) => {
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
+              <View style={styles.modalHeader}>
+                <View style={styles.modalHeaderContent}></View>
+                <TouchableOpacity
+                  onPress={() => {
+                    // navigation.navigate("Court Details");
+                    setModalVisible(false);
+                    console.log("test");
+                  }}
+                >
+                  <Text style={styles.modalHeaderCloseText}>X</Text>
+                </TouchableOpacity>
+              </View>
               {/* {item.courtNumber} */}
               <Text style={styles.courtText}>Court #86855</Text>
 
@@ -127,7 +139,7 @@ const CourtList = ({ navigation }) => {
               {/* {item.estimatedWaitTime} */}
               <Text style={styles.waitTimeText}>ESTIMATED TIME: 0</Text>
               <Pressable
-                style={[styles.button, styles.buttonClose]}
+                style={[styles.popupButton, styles.popupButtonClose]}
                 onPressIn={() => navigation.navigate("Check In")}
                 onPress={() => setModalVisible(false)}
               >
@@ -136,12 +148,6 @@ const CourtList = ({ navigation }) => {
             </View>
           </View>
         </Modal>
-        <Pressable
-          style={[styles.button, styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.textStyle}>Show Modal</Text>
-        </Pressable>
       </View>
     </View>
   );
@@ -230,10 +236,10 @@ const styles = {
   },
   modalView: {
     margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#B9EF37",
     borderRadius: 20,
     padding: 35,
-    alignItems: "center",
+    alignItems: "left",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -243,25 +249,62 @@ const styles = {
     shadowRadius: 4,
     elevation: 5,
   },
-  button: {
-    borderRadius: 20,
+  modalHeader: {
+    flexDirection: "row",
+    marginBottom: 30,
+  },
+  /* The header takes up all the vertical space not used by the close button. */
+  modalHeaderContent: {
+    flexGrow: 1,
+  },
+  modalHeaderCloseText: {
+    alignItems: "flex-end",
+    paddingLeft: 5,
+    paddingRight: 5,
+    fontSize: "bold",
+  },
+
+  popupButton: {
     padding: 10,
     elevation: 2,
+    alignSelf: "center",
   },
-  buttonOpen: {
+  popupButtonOpen: {
     backgroundColor: "#F194FF",
   },
-  buttonClose: {
-    backgroundColor: "#2196F3",
+  popupButtonClose: {
+    backgroundColor: "black",
   },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
   },
-  modalText: {
+  courtText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 15,
+  },
+
+  statusText: {
+    fontSize: 20,
+    marginBottom: 50,
+    textAlign: "center",
+    color: "white",
+  },
+
+  waitListText: {
+    fontSize: 15,
     marginBottom: 15,
     textAlign: "center",
+    color: "black",
+  },
+
+  waitTimeText: {
+    fontSize: 15,
+    marginBottom: 60,
+    textAlign: "center",
+    color: "black",
   },
 };
 

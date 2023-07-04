@@ -94,24 +94,28 @@ app.get("/getbookings", async (req, res) => {
   }
 });
 
-// Route for adding a new booking
-// TODO - fix this route
-app.post("/addbooking", (req, res) => {
-  const { user_email, court_id, booking_datetime, booking_type } = req.body;
+// Endpoint for adding a new booking
+app.post("/addbooking", async (req, res) => {
+  try {
+    const { user_email, court_id, booking_datetime, booking_type } = req.body;
 
-  // Insert the new booking into the database
-  const query =
-    "INSERT INTO bookings (user_email, court_id, booking_datetime, booking_type) VALUES ($1, $2, $3, $4)";
-  const values = [user_email, court_id, booking_datetime, booking_type];
+    // Insert the new booking into the bookings table
+    const insertQuery =
+      "INSERT INTO bookings (user_email, court_id, booking_datetime, booking_type) VALUES ($1, $2, $3, $4) RETURNING *";
+    const values = [user_email, court_id, booking_datetime, booking_type];
+    const result = await pool.query(insertQuery, values);
 
-  pool.query(query, values, (error, result) => {
-    if (error) {
-      console.error("Error adding booking:", error);
-      res.status(500).send("Error adding booking");
-    } else {
-      res.status(200).send("Booking added successfully");
-    }
-  });
+    // Send a success response with the inserted booking data
+    res.status(200).json({
+      message: "Booking added successfully",
+      booking: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error adding booking:", error);
+    res.status(500).json({
+      message: "An error occurred while adding the booking",
+    });
+  }
 });
 
 // ...
