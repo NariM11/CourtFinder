@@ -18,8 +18,12 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const CourtCheckInScreen = ({ route }) => {
-  const { selectedCourtNumber } = route.params;
+const WaitlistScreen = ({ route }) => {
+  const {
+    selectedCourtNumber,
+    selectedCourtWaitingList,
+    selectedCourtWaitingTime,
+  } = route.params;
 
   const {
     container,
@@ -36,6 +40,7 @@ const CourtCheckInScreen = ({ route }) => {
     buttonOutlineText,
     buttonWrapper,
     court,
+    wait,
   } = styles;
 
   return (
@@ -43,11 +48,14 @@ const CourtCheckInScreen = ({ route }) => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
 
       <View style={textWrapper}>
-        <Text style={greeting}>IT'S YOUR TURN TO PLAY</Text>
+        <Text style={greeting}>You've been added to the waitlist!</Text>
         <Text style={checkin}>
-          Please check in below before playing to start your session
+          {`POSITION ON WAITING LIST: ${selectedCourtWaitingList}`}
         </Text>
         <Text style={court}>{`Court Number #${selectedCourtNumber}`} </Text>
+        <Text style={wait}>
+          {`ESTIMATED WAITING TIME: ${selectedCourtWaitingTime}`}
+        </Text>
       </View>
 
       {/* <View style={buttonWrapper}>
@@ -76,7 +84,7 @@ const CourtCheckInScreen = ({ route }) => {
           }}
           style={button}
         >
-          <Text style={buttonText}>CHECK IN</Text>
+          <Text style={buttonText}>CANCEL</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -159,6 +167,13 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginBottom: 20,
   },
+
+  wait: {
+    alignSelf: "center",
+    color: "black",
+    fontSize: 20,
+    marginBottom: 20,
+  },
 });
 
-export default CourtCheckInScreen;
+export default WaitlistScreen;
