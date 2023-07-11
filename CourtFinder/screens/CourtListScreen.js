@@ -8,6 +8,7 @@ import {
   Alert,
   Modal,
   Pressable,
+  SafeAreaView,
 } from "react-native";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -18,7 +19,12 @@ import CourtDetailsPopup from "./CourtDetailsPopup";
 const CourtList = ({ navigation }) => {
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [availableModalVisible, setAvailableModalVisible] = useState(false);
+  const [waitlistModalVisible, setWaitlistModalVisible] = useState(false);
+  const [selectedCourtNumber, setSelectedCourtNumber] = useState(0);
+
+  const [selectedCourtWaitingList, setSelectedCourtWaitingList] = useState(0);
+  const [selectedCourtWaitingTime, setSelectedCourtWaitingTime] = useState(0);
 
   useEffect(() => {
     const fetchCourts = async () => {
@@ -68,8 +74,19 @@ const CourtList = ({ navigation }) => {
           <TouchableOpacity
             onPress={() => {
               // navigation.navigate("Court Details");
-              setModalVisible(true);
-              console.log("test");
+              if (item.available) {
+                handleAvailableButtonPress(item);
+                // setSelectedCourtAvailability(item.available);
+                // setSelectedCourtNumber(item.courtNumber);
+                // setSelectedCourtWaitingList(item.waitingListParties);
+                // setSelectedCourtWaitingTime(item.estimatedWaitTime);
+              } else {
+                handleWaitlistButtonPress(item);
+                // setSelectedCourtAvailability(item.available);
+                // setSelectedCourtNumber(item.courtNumber);
+                // setSelectedCourtWaitingList(item.waitingListParties);
+                // setSelectedCourtWaitingTime(item.estimatedWaitTime);
+              }
             }}
             style={[
               styles.button,
@@ -83,6 +100,20 @@ const CourtList = ({ navigation }) => {
         </View>
       </View>
     );
+  };
+
+  const handleAvailableButtonPress = (item) => {
+    setAvailableModalVisible(true);
+    setSelectedCourtNumber(item.courtNumber);
+    setSelectedCourtWaitingList(item.waitingListParties);
+    setSelectedCourtWaitingTime(item.estimatedWaitTime);
+  };
+
+  const handleWaitlistButtonPress = (item) => {
+    setWaitlistModalVisible(true);
+    setSelectedCourtNumber(item.courtNumber);
+    setSelectedCourtWaitingList(item.waitingListParties);
+    setSelectedCourtWaitingTime(item.estimatedWaitTime);
   };
 
   return (
@@ -107,20 +138,20 @@ const CourtList = ({ navigation }) => {
         <Modal
           animationType="none"
           transparent={true}
-          visible={modalVisible}
+          visible={availableModalVisible}
           onRequestClose={() => {
             Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
+            setAvailableModalVisible(!availableModalVisible); //
           }}
         >
           <View style={styles.centeredView}>
-            <View style={styles.modalView}>
+            <View style={styles.availableView}>
               <View style={styles.modalHeader}>
                 <View style={styles.modalHeaderContent}></View>
                 <TouchableOpacity
                   onPress={() => {
                     // navigation.navigate("Court Details");
-                    setModalVisible(false);
+                    setAvailableModalVisible(false);
                     console.log("test");
                   }}
                 >
@@ -128,22 +159,87 @@ const CourtList = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
               {/* {item.courtNumber} */}
-              <Text style={styles.courtText}>Court #86855</Text>
+              <Text
+                style={styles.courtText}
+              >{`Court ${selectedCourtNumber}`}</Text>
 
               {/* {item.available ? "AVAILABLE" : "WAITLIST"} */}
               <Text style={styles.statusText}>AVAILABLE</Text>
 
               {/* {item.waitingListParties} */}
-              <Text style={styles.waitListText}>0 PARTIES IN WAITING LIST</Text>
+              <Text
+                style={styles.waitListText}
+              >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
 
               {/* {item.estimatedWaitTime} */}
-              <Text style={styles.waitTimeText}>ESTIMATED TIME: 0</Text>
+              <Text
+                style={styles.waitTimeText}
+              >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
               <Pressable
                 style={[styles.popupButton, styles.popupButtonClose]}
-                onPressIn={() => navigation.navigate("Check In")}
-                onPress={() => setModalVisible(false)}
+                onPressIn={() =>
+                  navigation.navigate("Check In", { selectedCourtNumber })
+                }
+                onPress={() => setAvailableModalVisible(false)}
               >
                 <Text style={styles.textStyle}>CHECK IN </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={waitlistModalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setWaitlistModalVisible(!waitlistModalVisible); //
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.waitlistView}>
+              <View style={styles.modalHeader}>
+                <View style={styles.modalHeaderContent}></View>
+                <TouchableOpacity
+                  onPress={() => {
+                    // navigation.navigate("Court Details");
+                    setWaitlistModalVisible(false);
+                    console.log("test");
+                  }}
+                >
+                  <Text style={styles.modalHeaderCloseText}>X</Text>
+                </TouchableOpacity>
+              </View>
+              {/* {item.courtNumber} */}
+              <Text
+                style={styles.courtText}
+              >{`Court ${selectedCourtNumber}`}</Text>
+
+              {/* {item.available ? "AVAILABLE" : "WAITLIST"} */}
+              <Text style={styles.statusText}>WAITLIST</Text>
+
+              {/* {item.waitingListParties} */}
+              <Text
+                style={styles.waitListText}
+              >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
+
+              {/* {item.estimatedWaitTime} */}
+              <Text
+                style={styles.waitTimeText}
+              >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
+              <Pressable
+                style={[styles.popupButton, styles.popupButtonClose]}
+                onPressIn={() =>
+                  navigation.navigate("Waitlist", {
+                    selectedCourtNumber,
+                    selectedCourtWaitingList,
+                    selectedCourtWaitingTime,
+                  })
+                }
+                onPress={() => setWaitlistModalVisible(false)}
+              >
+                <Text style={styles.textStyle}>JOIN WAITLIST</Text>
               </Pressable>
             </View>
           </View>
@@ -234,9 +330,25 @@ const styles = {
     alignItems: "center",
     marginTop: 22,
   },
-  modalView: {
+  availableView: {
     margin: 20,
     backgroundColor: "#B9EF37",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "left",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  waitlistView: {
+    margin: 20,
+    backgroundColor: "#EFBB37",
     borderRadius: 20,
     padding: 35,
     alignItems: "left",
@@ -283,6 +395,7 @@ const styles = {
   courtText: {
     fontSize: 30,
     fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 15,
   },
 

@@ -10,6 +10,7 @@ import SignUpScreen from "./screens/SignUpScreen";
 import CourtDetailsPopup from "./screens/CourtDetailsPopup";
 import CourtCheckInScreen from "./screens/CourtCheckInScreen";
 // import CourtListScreen from "./screns/CourtListScreen";
+import WaitlistScreen from "./screens/WaitlistScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -17,40 +18,44 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Group>
-          <Stack.Screen
-            options={{ headerShown: true }}
-            name="Home"
-            component={HomeScreen}
-          />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Home"
+          component={HomeScreen}
+        />
 
-          <Stack.Screen
-            options={{ headerShown: true }}
-            name="Login"
-            component={LoginScreen}
-          />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Login"
+          component={LoginScreen}
+        />
 
-          <Stack.Screen
-            options={{ headerShown: true }}
-            name="Sign Up"
-            component={SignUpScreen}
-          />
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Sign Up"
+          component={SignUpScreen}
+        />
 
-          <Stack.Screen
-            options={{ headerShown: true }}
-            name="Courts"
-            component={CourtListScreen}
-          />
-        </Stack.Group>
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Courts"
+          component={CourtListScreen}
+        />
 
-        <Stack.Group screenOptions={{ presentation: "modal" }}>
+        {/* <Stack.Group screenOptions={{ presentation: "modal" }}>
           <Stack.Screen name="Court Details" component={CourtDetailsPopup} />
-        </Stack.Group>
+        </Stack.Group> */}
 
         <Stack.Screen
           options={{ headerShown: true }}
           name="Check In"
           component={CourtCheckInScreen}
+        />
+
+        <Stack.Screen
+          options={{ headerShown: true }}
+          name="Waitlist"
+          component={WaitlistScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
