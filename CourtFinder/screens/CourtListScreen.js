@@ -34,10 +34,10 @@ const CourtList = ({ navigation }) => {
 
         // Parse and transform the data to match the desired naming convention
         const parsedCourts = data.map((court) => ({
-          courtNumber: court.court_id,
-          available: court.court_status === "available",
-          waitingListParties: court.num_parties_waiting,
-          estimatedWaitTime: `${court.time_remaining} minutes`,
+          courtNumber: court.id,
+          available: court.status === "available",
+          waitingListParties: court.numPartiesWaiting,
+          estimatedWaitTime: `${court.estimatedTimeRemaining} minutes`,
         }));
 
         setCourts(parsedCourts);

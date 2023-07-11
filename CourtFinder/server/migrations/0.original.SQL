@@ -12,22 +12,16 @@ CREATE TABLE users (
 CREATE TABLE bookings (
     booking_id SERIAL PRIMARY KEY,
     user_email VARCHAR(255) REFERENCES users (email),
+    court_id SERIAL REFERENCES courts (court_id),
     booking_datetime TIMESTAMP,
     booking_type VARCHAR(255) CHECK (status IN ('checked in', 'waiting list'))
-    play_start_time TIMESTAMP,
-    play_end_time TIMESTAMP
-);
-
-
--- Create reference column in bookings for court id
-ALTER TABLE bookings(
-ADD court_id VARCHAR(255),
-ADD CONSTRAINT fk_court_id FOREIGN KEY (court_id) REFERENCES courts (id)
 );
 
 -- Create courts table
 CREATE TABLE courts (
-    id VARCHAR(255) PRIMARY KEY,
-    court_name VARCHAR(255)
+    court_id SERIAL PRIMARY KEY,
+    court_status VARCHAR(255) CHECK (status IN ('available', 'waiting list'))
+    num_parties_waiting integer;
+    time_remaining integer;
 );
 
