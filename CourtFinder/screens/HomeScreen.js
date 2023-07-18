@@ -8,12 +8,8 @@ import {
   ImageBackground,
   Image,
   StatusBar,
-  Button,
   TouchableOpacity,
 } from "react-native";
-
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const HomeScreen = ({ navigation }) => {
   const {
@@ -29,7 +25,6 @@ const HomeScreen = ({ navigation }) => {
     buttonText,
     buttonOutline,
     buttonOutlineText,
-    buttonWrapper,
   } = styles;
   return (
     <SafeAreaView style={container}>
@@ -50,24 +45,6 @@ const HomeScreen = ({ navigation }) => {
             Looking for an available Stanley Park tennis court?
           </Text>
         </View>
-
-        {/* <View style={buttonWrapper}>
-          <Button
-            color={`white`}
-            title={`LOGIN`}
-            onPress={() => {
-              console.log("test");
-            }}
-          />
-
-          <Button
-            color={`black`}
-            title={`SIGN UP`}
-            onPress={() => {
-              console.log("test");
-            }}
-          />
-        </View> */}
 
         <View style={buttonContainer}>
           <TouchableOpacity
@@ -113,11 +90,6 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    // width: "60%",
-    // justifyContent: "center",
-    // alignItems: "center",
-    // marginTop: 50,
-
     justifyContent: "flex-end",
     alignSelf: "center",
     width: "60%",

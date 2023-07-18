@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Touchable,
   TouchableOpacity,
   View,
   Image,
@@ -11,9 +10,6 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useState } from "react";
-
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
@@ -50,11 +46,8 @@ const LoginScreen = ({ navigation }) => {
     buttonContainer,
     button,
     buttonText,
-    buttonOutline,
-    buttonOutlineText,
     wrapper,
     logo,
-    logInText,
   } = styles;
 
   return (
@@ -62,18 +55,15 @@ const LoginScreen = ({ navigation }) => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
-          {/* <Text style={logInText}>LOG IN PAGE</Text> */}
           <TextInput
             placeholder="Email"
             placeholderTextColor={`white`}
-            // value = { }
             onChangeText={(text) => setEmail(text)}
             style={input}
           ></TextInput>
           <TextInput
             placeholder="Password"
             placeholderTextColor={`white`}
-            // value = {}
             onChangeText={(text) => setPassword(text)}
             style={input}
             secureTextEntry
@@ -84,14 +74,6 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity onPress={onSubmitForm} style={button}>
             <Text style={buttonText}>LOG IN</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            onPress={() => {
-              console.log("test");
-            }}
-            style={[button, buttonOutline]}
-          >
-            <Text style={[buttonOutlineText]}>SIGN UP</Text>
-          </TouchableOpacity> */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

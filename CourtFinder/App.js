@@ -12,6 +12,9 @@ import CourtCheckInScreen from "./screens/CourtCheckInScreen";
 // import CourtListScreen from "./screns/CourtListScreen";
 import WaitlistScreen from "./screens/WaitlistScreen";
 
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Feather } from "@expo/vector-icons";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {

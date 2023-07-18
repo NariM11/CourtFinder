@@ -5,18 +5,10 @@ import {
   Text,
   View,
   SafeAreaView,
-  ImageBackground,
   Image,
   StatusBar,
-  Button,
   TouchableOpacity,
-  Alert,
-  Modal,
-  Pressable,
 } from "react-native";
-
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const WaitlistScreen = ({ route }) => {
   const {
@@ -27,8 +19,6 @@ const WaitlistScreen = ({ route }) => {
 
   const {
     container,
-    seawall,
-    overlay,
     logo,
     greeting,
     checkin,
@@ -36,9 +26,6 @@ const WaitlistScreen = ({ route }) => {
     buttonContainer,
     button,
     buttonText,
-    buttonOutline,
-    buttonOutlineText,
-    buttonWrapper,
     court,
     wait,
   } = styles;
@@ -57,24 +44,6 @@ const WaitlistScreen = ({ route }) => {
           {`ESTIMATED WAITING TIME: ${selectedCourtWaitingTime}`}
         </Text>
       </View>
-
-      {/* <View style={buttonWrapper}>
-          <Button
-            color={`white`}
-            title={`LOGIN`}
-            onPress={() => {
-              console.log("test");
-            }}
-          />
-
-          <Button
-            color={`black`}
-            title={`SIGN UP`}
-            onPress={() => {
-              console.log("test");
-            }}
-          />
-        </View> */}
 
       <View style={buttonContainer}>
         <TouchableOpacity
@@ -99,11 +68,6 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    // width: "60%",
-    // justifyContent: "center",
-    // alignItems: "center",
-    // marginTop: 50,
-
     alignSelf: "center",
     width: "50%",
     flex: 3,
@@ -143,6 +107,7 @@ const styles = StyleSheet.create({
 
   textWrapper: {
     margin: 20,
+    alignItems: "center",
   },
 
   greeting: {
