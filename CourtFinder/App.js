@@ -14,6 +14,8 @@ import CourtCheckInScreen from "./screens/CourtCheckInScreen";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [loginStatus, setLoginStatus] = useState(false);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>

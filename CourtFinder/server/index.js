@@ -3,6 +3,8 @@ const app = express();
 const cors = require("cors");
 const pool = require("./db");
 
+const jwt = require("jsonwebtoken");
+
 // Middleware
 app.use(cors());
 app.use(express.json()); // Access to request.body
@@ -19,12 +21,32 @@ app.post("/login", async (req, res) => {
     if (user.rows.length === 0) {
       return res.status(401).json("Invalid email or password");
     }
-
-    res.json("Login successful");
+    const token = jwt.sign({ email }, "jwtSecret", { expiresIn: 300 });
+    res.json({ auth: true, token: token, user: email });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
   }
+});
+
+const verifyJWT = (req, res, next) => {
+  const token = req.headers["x-access-token"];
+  if (!token) {
+    res.send("Authentication failed, need token to authenticate successfully");
+  } else {
+    jwt.verify(token, "jwtSecret", (err, decoded) => {
+      if (err) {
+        res.json({ auth: false, message: "Failed to authenticate" });
+      } else {
+        req.userId = decoded.id;
+        next();
+      }
+    });
+  }
+};
+
+app.get("/isUserAuth", verifyJWT, (req, res) => {
+  res.send("User is authenticated");
 });
 
 // Sign up
@@ -143,7 +165,12 @@ app.post("/addbooking", async (req, res) => {
 
     const { user_email, court_id } = req.body;
 
-    // const { user_email, court_id, booking_datetime, booking_type } = req.body;
+    const courtBookings = bookings.filter(
+      (booking) => booking.court_id === court_id
+    );
+
+    const currentTime = new Date();
+    const MINUTESPERPLAY = 60;
 
     // Insert the new booking into the bookings table
     const insertQuery =
@@ -164,9 +191,23 @@ app.post("/addbooking", async (req, res) => {
   }
 });
 
-function addBooking(courts, bookings, id, user_email) {
+function addBooking(courts, bookings, court_id, user_email) {
   const currentTime = new Date();
   const MINUTESPERPLAY = 60;
+
+  const courtBookings = bookings.filter(
+    (booking) => booking.court_id === court_id
+  );
+
+  for (const booking of courtBookings) {
+    const playStartTime = new Date(booking.play_start_time);
+    const playEndTime = new Date(booking.play_end_time);
+    const insertQuery =
+      "INSERT INTO bookings (user_email, court_id, booking_datetime, booking_type) VALUES ($1, $2, $3, $4) RETURNING *";
+
+    if (currentTime <= playEndTime) {
+    }
+  }
 
   for (const court of courts) {
     const courtBookings = bookings.filter(
