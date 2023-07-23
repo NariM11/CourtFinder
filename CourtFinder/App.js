@@ -8,54 +8,57 @@ import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import CourtDetailsPopup from "./screens/CourtDetailsPopup";
-import CourtCheckInScreen from "./screens/CourtCheckInScreen";
-// import CourtListScreen from "./screns/CourtListScreen";
+import CourtCheckInScreen from "./screens/CourtCheckInScreen"; // import CourtListScreen from "./screns/CourtListScreen";
+
+import { AuthProvider } from "./screens/AuthContext";
+
+import React, { useState } from "react";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [loginStatus, setLoginStatus] = useState(false);
-
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Group>
-          <Stack.Screen
-            options={{ headerShown: true }}
-            name="Home"
-            component={HomeScreen}
-          />
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Group>
+            <Stack.Screen
+              options={{ headerShown: true }}
+              name="Home"
+              component={HomeScreen}
+            />
+
+            <Stack.Screen
+              options={{ headerShown: true }}
+              name="Login"
+              component={LoginScreen}
+            />
+
+            <Stack.Screen
+              options={{ headerShown: true }}
+              name="Sign Up"
+              component={SignUpScreen}
+            />
+
+            <Stack.Screen
+              options={{ headerShown: true }}
+              name="Courts"
+              component={CourtListScreen}
+            />
+          </Stack.Group>
+
+          <Stack.Group screenOptions={{ presentation: "modal" }}>
+            <Stack.Screen name="Court Details" component={CourtDetailsPopup} />
+          </Stack.Group>
 
           <Stack.Screen
             options={{ headerShown: true }}
-            name="Login"
-            component={LoginScreen}
+            name="Check In"
+            component={CourtCheckInScreen}
           />
-
-          <Stack.Screen
-            options={{ headerShown: true }}
-            name="Sign Up"
-            component={SignUpScreen}
-          />
-
-          <Stack.Screen
-            options={{ headerShown: true }}
-            name="Courts"
-            component={CourtListScreen}
-          />
-        </Stack.Group>
-
-        <Stack.Group screenOptions={{ presentation: "modal" }}>
-          <Stack.Screen name="Court Details" component={CourtDetailsPopup} />
-        </Stack.Group>
-
-        <Stack.Screen
-          options={{ headerShown: true }}
-          name="Check In"
-          component={CourtCheckInScreen}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
 

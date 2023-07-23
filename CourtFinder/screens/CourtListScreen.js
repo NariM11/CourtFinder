@@ -14,6 +14,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import CourtDetailsPopup from "./CourtDetailsPopup";
+import AuthContext from "./AuthContext";
 
 const CourtList = ({ navigation }) => {
   const [courts, setCourts] = useState([]);
