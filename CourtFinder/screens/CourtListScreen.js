@@ -12,11 +12,20 @@ import {
   RefreshControl,
 } from "react-native";
 
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Feather } from "@expo/vector-icons";
+import CourtDetailsPopup from "./CourtDetailsPopup";
+import HomeScreen from "./HomeScreen";
+import LoginScreen from "./LoginScreen";
+
+const Tab = createBottomTabNavigator();
+
 const CourtList = ({ navigation }) => {
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [availableModalVisible, setAvailableModalVisible] = useState(false);
   const [waitlistModalVisible, setWaitlistModalVisible] = useState(false);
+  const [bookingModalVisible, setBookingModalVisible] = useState(false);
   const [selectedCourtNumber, setSelectedCourtNumber] = useState(0);
 
   const [selectedCourtWaitingList, setSelectedCourtWaitingList] = useState(0);
@@ -123,6 +132,10 @@ const CourtList = ({ navigation }) => {
     setSelectedCourtWaitingTime(item.estimatedWaitTime);
   };
 
+  const handleBookingButtonPress = () => {
+    setBookingModalVisible(true);
+  };
+
   return (
     // replace with <CourtDetailsPopUp/> and import at top
     <SafeAreaView style={styles.container}>
@@ -132,6 +145,7 @@ const CourtList = ({ navigation }) => {
           style={styles.logo}
         />
       </View>
+
       <Text style={styles.title}>SELECT COURT</Text>
       <View style={styles.titleSpacing} />
       <FlatList
@@ -244,6 +258,69 @@ const CourtList = ({ navigation }) => {
             </View>
           </View>
         </Modal>
+
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={bookingModalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setWaitlistModalVisible(!bookingModalVisible); //
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.bookingView}>
+              <View style={styles.modalHeader}>
+                <View style={styles.modalHeaderContent}></View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setBookingModalVisible(false);
+                    console.log("test");
+                  }}
+                >
+                  <Text style={styles.modalHeaderCloseText}>X</Text>
+                </TouchableOpacity>
+              </View>
+              <Text
+                style={styles.courtText}
+              >{`Court ${selectedCourtNumber}`}</Text>
+
+              <Text style={styles.statusText}>WAITLIST</Text>
+
+              <Text
+                style={styles.waitListText}
+              >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
+
+              <Text
+                style={styles.waitTimeText}
+              >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
+              <Pressable
+                style={[styles.popupButton, styles.popupButtonClose]}
+                onPressIn={() =>
+                  navigation.navigate("Waitlist", {
+                    selectedCourtNumber,
+                    selectedCourtWaitingList,
+                    selectedCourtWaitingTime,
+                  })
+                }
+                onPress={() => setWaitlistModalVisible(false)}
+              >
+                <Text style={styles.textStyle}>JOIN WAITLIST</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      </View>
+
+      <View style={styles.bookingButtonView}>
+        <TouchableOpacity
+          onPress={() => {
+            handleBookingButtonPress();
+          }}
+          style={[styles.button, styles.bookingButton]}
+        >
+          <Text style={styles.buttonText}>YOUR BOOKINGS</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -257,9 +334,10 @@ const styles = {
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 0,
     justifyContent: "center",
   },
+
   logo: {
     width: 200,
     height: 200,
@@ -357,6 +435,23 @@ const styles = {
     shadowRadius: 4,
     elevation: 5,
   },
+
+  bookingView: {
+    margin: 20,
+    backgroundColor: "#F8602F",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "left",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
   modalHeader: {
     flexDirection: "row",
     marginBottom: 30,
@@ -414,6 +509,16 @@ const styles = {
     marginBottom: 60,
     textAlign: "center",
     color: "black",
+  },
+
+  bookingButtonView: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  bookingButton: {
+    backgroundColor: "#F8602F",
   },
 };
 
