@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Touchable,
   TouchableOpacity,
   View,
   Image,
@@ -13,9 +12,6 @@ import {
 import React, { useState, useContext } from "react";
 import AuthContext from "./AuthContext";
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
 const SignUpScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -23,6 +19,11 @@ const SignUpScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const onSubmitForm = async () => {
+    if (!firstName || !lastName || !email || !password) {
+      console.log("All fields are required");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:5000/signup", {
         method: "POST",
@@ -54,44 +55,38 @@ const SignUpScreen = ({ navigation }) => {
     buttonContainer,
     button,
     buttonText,
-    buttonOutline,
-    buttonOutlineText,
     wrapper,
     logo,
-    logInText,
   } = styles;
+
+  const isSignUpDisabled = !firstName || !lastName || !email || !password;
 
   return (
     <SafeAreaView style={wrapper}>
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
-          {/* <Text style={logInText}>SIGN UP</Text> */}
           <TextInput
             placeholder="First Name"
             placeholderTextColor={`white`}
-            // value = { }
             onChangeText={(text) => setFirstName(text)}
             style={input}
           ></TextInput>
           <TextInput
             placeholder="Last Name"
             placeholderTextColor={`white`}
-            // value = { }
             onChangeText={(text) => setLastName(text)}
             style={input}
           ></TextInput>
           <TextInput
             placeholder="Email"
             placeholderTextColor={`white`}
-            // value = { }
             onChangeText={(text) => setEmail(text)}
             style={input}
           ></TextInput>
           <TextInput
             placeholder="Password"
             placeholderTextColor={`white`}
-            // value = {}
             onChangeText={(text) => setPassword(text)}
             style={input}
             secureTextEntry
@@ -99,15 +94,11 @@ const SignUpScreen = ({ navigation }) => {
         </View>
 
         <View style={buttonContainer}>
-          {/* <TouchableOpacity
-            onPress={() => {
-              console.log("test");
-            }}
-            style={button}
+          <TouchableOpacity
+            onPress={onSubmitForm}
+            style={[button, isSignUpDisabled && styles.disabledButton]}
+            disabled={isSignUpDisabled}
           >
-            <Text style={buttonText}>LOGIN</Text>
-          </TouchableOpacity> */}
-          <TouchableOpacity onPress={onSubmitForm} style={button}>
             <Text style={buttonText}>SIGN UP</Text>
           </TouchableOpacity>
         </View>
@@ -171,6 +162,10 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "700",
     fontSize: 16,
+  },
+
+  disabledButton: {
+    opacity: 0.5,
   },
 
   logo: {

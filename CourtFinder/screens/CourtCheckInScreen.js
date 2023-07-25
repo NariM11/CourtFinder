@@ -5,26 +5,16 @@ import {
   Text,
   View,
   SafeAreaView,
-  ImageBackground,
   Image,
   StatusBar,
-  Button,
   TouchableOpacity,
-  Alert,
-  Modal,
-  Pressable,
 } from "react-native";
-
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const CourtCheckInScreen = ({ route }) => {
   const { selectedCourtNumber } = route.params;
 
   const {
     container,
-    seawall,
-    overlay,
     logo,
     greeting,
     checkin,
@@ -32,9 +22,6 @@ const CourtCheckInScreen = ({ route }) => {
     buttonContainer,
     button,
     buttonText,
-    buttonOutline,
-    buttonOutlineText,
-    buttonWrapper,
     court,
   } = styles;
 
@@ -49,24 +36,6 @@ const CourtCheckInScreen = ({ route }) => {
         </Text>
         <Text style={court}>{`Court Number #${selectedCourtNumber}`} </Text>
       </View>
-
-      {/* <View style={buttonWrapper}>
-          <Button
-            color={`white`}
-            title={`LOGIN`}
-            onPress={() => {
-              console.log("test");
-            }}
-          />
-
-          <Button
-            color={`black`}
-            title={`SIGN UP`}
-            onPress={() => {
-              console.log("test");
-            }}
-          />
-        </View> */}
 
       <View style={buttonContainer}>
         <TouchableOpacity
@@ -91,11 +60,6 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    // width: "60%",
-    // justifyContent: "center",
-    // alignItems: "center",
-    // marginTop: 50,
-
     alignSelf: "center",
     width: "50%",
     flex: 3,

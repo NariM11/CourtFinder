@@ -9,23 +9,33 @@ import {
   Modal,
   Pressable,
   SafeAreaView,
+  RefreshControl,
 } from "react-native";
 
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Feather } from "@expo/vector-icons";
 import CourtDetailsPopup from "./CourtDetailsPopup";
+
+import HomeScreen from "./HomeScreen";
+import LoginScreen from "./LoginScreen";
+
+const Tab = createBottomTabNavigator();
+
 import AuthContext from "./AuthContext";
+
 
 const CourtList = ({ navigation }) => {
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [availableModalVisible, setAvailableModalVisible] = useState(false);
   const [waitlistModalVisible, setWaitlistModalVisible] = useState(false);
+  const [bookingModalVisible, setBookingModalVisible] = useState(false);
   const [selectedCourtNumber, setSelectedCourtNumber] = useState(0);
 
   const [selectedCourtWaitingList, setSelectedCourtWaitingList] = useState(0);
   const [selectedCourtWaitingTime, setSelectedCourtWaitingTime] = useState(0);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const fetchCourts = async () => {
@@ -49,6 +59,24 @@ const CourtList = ({ navigation }) => {
 
     fetchCourts();
   }, []);
+
+  const handleRefresh = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/getcourts");
+      const data = await response.json();
+
+      const parsedCourts = data.map((court) => ({
+        courtNumber: court.id,
+        available: court.status === "available",
+        waitingListParties: court.numPartiesWaiting,
+        estimatedWaitTime: `${court.estimatedTimeRemaining} minutes`,
+      }));
+
+      setCourts(parsedCourts);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const renderItem = ({ item }) => {
     const isSelected = selectedCourt === item.courtNumber;
@@ -74,19 +102,10 @@ const CourtList = ({ navigation }) => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             onPress={() => {
-              // navigation.navigate("Court Details");
               if (item.available) {
                 handleAvailableButtonPress(item);
-                // setSelectedCourtAvailability(item.available);
-                // setSelectedCourtNumber(item.courtNumber);
-                // setSelectedCourtWaitingList(item.waitingListParties);
-                // setSelectedCourtWaitingTime(item.estimatedWaitTime);
               } else {
                 handleWaitlistButtonPress(item);
-                // setSelectedCourtAvailability(item.available);
-                // setSelectedCourtNumber(item.courtNumber);
-                // setSelectedCourtWaitingList(item.waitingListParties);
-                // setSelectedCourtWaitingTime(item.estimatedWaitTime);
               }
             }}
             style={[
@@ -117,15 +136,20 @@ const CourtList = ({ navigation }) => {
     setSelectedCourtWaitingTime(item.estimatedWaitTime);
   };
 
+  const handleBookingButtonPress = () => {
+    setBookingModalVisible(true);
+  };
+
   return (
     // replace with <CourtDetailsPopUp/> and import at top
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Image
           source={require("../assets/logo_green.png")}
           style={styles.logo}
         />
       </View>
+
       <Text style={styles.title}>SELECT COURT</Text>
       <View style={styles.titleSpacing} />
       <FlatList
@@ -133,6 +157,9 @@ const CourtList = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.courtNumber.toString()}
         contentContainerStyle={styles.listContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
       />
 
       <View style={styles.centeredView}>
@@ -151,7 +178,6 @@ const CourtList = ({ navigation }) => {
                 <View style={styles.modalHeaderContent}></View>
                 <TouchableOpacity
                   onPress={() => {
-                    // navigation.navigate("Court Details");
                     setAvailableModalVisible(false);
                     console.log("test");
                   }}
@@ -159,20 +185,16 @@ const CourtList = ({ navigation }) => {
                   <Text style={styles.modalHeaderCloseText}>X</Text>
                 </TouchableOpacity>
               </View>
-              {/* {item.courtNumber} */}
               <Text
                 style={styles.courtText}
               >{`Court ${selectedCourtNumber}`}</Text>
 
-              {/* {item.available ? "AVAILABLE" : "WAITLIST"} */}
               <Text style={styles.statusText}>AVAILABLE</Text>
 
-              {/* {item.waitingListParties} */}
               <Text
                 style={styles.waitListText}
               >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
 
-              {/* {item.estimatedWaitTime} */}
               <Text
                 style={styles.waitTimeText}
               >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
@@ -204,7 +226,6 @@ const CourtList = ({ navigation }) => {
                 <View style={styles.modalHeaderContent}></View>
                 <TouchableOpacity
                   onPress={() => {
-                    // navigation.navigate("Court Details");
                     setWaitlistModalVisible(false);
                     console.log("test");
                   }}
@@ -212,20 +233,68 @@ const CourtList = ({ navigation }) => {
                   <Text style={styles.modalHeaderCloseText}>X</Text>
                 </TouchableOpacity>
               </View>
-              {/* {item.courtNumber} */}
               <Text
                 style={styles.courtText}
               >{`Court ${selectedCourtNumber}`}</Text>
 
-              {/* {item.available ? "AVAILABLE" : "WAITLIST"} */}
               <Text style={styles.statusText}>WAITLIST</Text>
 
-              {/* {item.waitingListParties} */}
               <Text
                 style={styles.waitListText}
               >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
 
-              {/* {item.estimatedWaitTime} */}
+              <Text
+                style={styles.waitTimeText}
+              >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
+              <Pressable
+                style={[styles.popupButton, styles.popupButtonClose]}
+                onPressIn={() =>
+                  navigation.navigate("Waitlist", {
+                    selectedCourtNumber,
+                    selectedCourtWaitingList,
+                    selectedCourtWaitingTime,
+                  })
+                }
+                onPress={() => setWaitlistModalVisible(false)}
+              >
+                <Text style={styles.textStyle}>JOIN WAITLIST</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType="none"
+          transparent={true}
+          visible={bookingModalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setWaitlistModalVisible(!bookingModalVisible); //
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.bookingView}>
+              <View style={styles.modalHeader}>
+                <View style={styles.modalHeaderContent}></View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setBookingModalVisible(false);
+                    console.log("test");
+                  }}
+                >
+                  <Text style={styles.modalHeaderCloseText}>X</Text>
+                </TouchableOpacity>
+              </View>
+              <Text
+                style={styles.courtText}
+              >{`Court ${selectedCourtNumber}`}</Text>
+
+              <Text style={styles.statusText}>WAITLIST</Text>
+
+              <Text
+                style={styles.waitListText}
+              >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
+
               <Text
                 style={styles.waitTimeText}
               >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
@@ -246,7 +315,18 @@ const CourtList = ({ navigation }) => {
           </View>
         </Modal>
       </View>
-    </View>
+
+      <View style={styles.bookingButtonView}>
+        <TouchableOpacity
+          onPress={() => {
+            handleBookingButtonPress();
+          }}
+          style={[styles.button, styles.bookingButton]}
+        >
+          <Text style={styles.buttonText}>YOUR BOOKINGS</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -258,9 +338,10 @@ const styles = {
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 0,
     justifyContent: "center",
   },
+
   logo: {
     width: 200,
     height: 200,
@@ -285,11 +366,7 @@ const styles = {
     marginBottom: 50,
     marginRight: 20,
     marginL: 20,
-    // TouchableOpacity: 0.5,
   },
-  // selectedCourtContainer: {
-  //   backgroundColor: "#C0C0C0",
-  // },
   courtNumber: {
     fontSize: 20,
     fontWeight: "bold",
@@ -362,6 +439,23 @@ const styles = {
     shadowRadius: 4,
     elevation: 5,
   },
+
+  bookingView: {
+    margin: 20,
+    backgroundColor: "#F8602F",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "left",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
   modalHeader: {
     flexDirection: "row",
     marginBottom: 30,
@@ -374,7 +468,7 @@ const styles = {
     alignItems: "flex-end",
     paddingLeft: 5,
     paddingRight: 5,
-    fontSize: "bold",
+    fontWeight: "bold",
   },
 
   popupButton: {
@@ -419,6 +513,16 @@ const styles = {
     marginBottom: 60,
     textAlign: "center",
     color: "black",
+  },
+
+  bookingButtonView: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  bookingButton: {
+    backgroundColor: "#F8602F",
   },
 };
 
