@@ -3,6 +3,8 @@ const app = express();
 const cors = require("cors");
 const pool = require("./db");
 
+const jwt = require("jsonwebtoken");
+
 // Middleware
 app.use(cors());
 app.use(express.json()); // Access to request.body
@@ -19,12 +21,40 @@ app.post("/login", async (req, res) => {
     if (user.rows.length === 0) {
       return res.status(401).json("Invalid email or password");
     }
-
-    res.json("Login successful");
+    const token = jwt.sign({ email }, "jwtSecret", {
+      expiresIn: 300,
+    });
+    res.json({ auth: true, token: token, user: email });
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Server error");
   }
+});
+
+const verifyJWT = (req, res, next) => {
+  const token = req.headers["x-access-token"];
+  if (!token) {
+    return res.status(401).json({
+      auth: false,
+      message: "Authentication failed, token is required",
+    });
+  } else {
+    jwt.verify(token, "jwtSecret", (err, decoded) => {
+      if (err) {
+        return res
+          .status(403)
+          .json({ auth: false, message: "Failed to authenticate token" });
+      } else {
+        // Token is valid, store the user ID in the request for later use
+        req.userId = decoded.id;
+        next();
+      }
+    });
+  }
+};
+
+app.get("/isUserAuth", verifyJWT, (req, res) => {
+  res.send("User is authenticated");
 });
 
 // Sign up
@@ -141,14 +171,36 @@ app.post("/addbooking", async (req, res) => {
     const { rows: courts } = await pool.query("SELECT * FROM courts");
     const { rows: bookings } = await pool.query("SELECT * FROM bookings");
 
-    const { user_email, court_id } = req.body;
+    const { user_email, court_id, booking_type } = req.body;
 
-    // const { user_email, court_id, booking_datetime, booking_type } = req.body;
+    // Check if the provided court_id exists in the courts table
+    const court = courts.find((court) => court.id === court_id);
+    if (!court) {
+      return res.status(404).json({ message: "Court not found" });
+    }
+
+    const courtBookings = bookings.filter(
+      (booking) => booking.court_id === court_id
+    );
+
+    const MINUTESPERPLAY = 60;
+    var currentDateTime = new Date();
+    var startDateTime = CalculateStartDateTime(bookings, currentDateTime);
+    var endDateTime = new Date(
+      startDateTime.getTime() + MINUTESPERPLAY * 60000
+    );
 
     // Insert the new booking into the bookings table
     const insertQuery =
-      "INSERT INTO bookings (user_email, court_id, booking_datetime, booking_type) VALUES ($1, $2, $3, $4) RETURNING *";
-    const values = [user_email, court_id, booking_datetime, booking_type];
+      "INSERT INTO bookings (user_email,booking_datetime,booking_type,court_id,play_start_time,play_end_time) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
+    const values = [
+      user_email,
+      currentDateTime.toUTCString(),
+      booking_type,
+      court_id,
+      startDateTime.toUTCString(),
+      endDateTime.toUTCString(),
+    ];
     const result = await pool.query(insertQuery, values);
 
     // Send a success response with the inserted booking data
@@ -164,41 +216,18 @@ app.post("/addbooking", async (req, res) => {
   }
 });
 
-function addBooking(courts, bookings, id, user_email) {
-  const currentTime = new Date();
-  const MINUTESPERPLAY = 60;
+function CalculateStartDateTime(bookings, currentDateTime) {
+  let latestEndTime = currentDateTime;
 
-  for (const court of courts) {
-    const courtBookings = bookings.filter(
-      (booking) => booking.court_id === court.id
-    );
+  for (const booking of bookings) {
+    const playEndTime = new Date(booking.play_end_time);
 
-    courtBookings.sort(
-      (a, b) => new Date(b.booking_datetime) - new Date(a.booking_datetime)
-    );
-
-    let isAvailable = true;
-    let estimatedTimeRemaining = 0;
-
-    for (const booking of courtBookings) {
-      const playStartTime = new Date(booking.play_start_time);
-      const playEndTime = new Date(booking.play_end_time);
-
-      if (currentTime <= playEndTime) {
-        isAvailable = false;
-        estimatedTimeRemaining = Math.ceil(
-          (playEndTime - currentTime) / 1000 / MINUTESPERPLAY
-        );
-        break;
-      }
+    if (playEndTime > latestEndTime) {
+      latestEndTime = playEndTime;
     }
-
-    court.status = isAvailable ? "available" : "waitlist";
-    court.estimatedTimeRemaining = estimatedTimeRemaining;
-    court.numPartiesWaiting = Math.ceil(
-      estimatedTimeRemaining / MINUTESPERPLAY
-    );
   }
+
+  return latestEndTime;
 }
 
 // ...

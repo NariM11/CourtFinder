@@ -10,7 +10,8 @@ import {
   StatusBar,
   SafeAreaView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import AuthContext from "./AuthContext";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -33,6 +34,7 @@ const SignUpScreen = ({ navigation }) => {
       if (response.ok) {
         // Request was successful
         const data = await response.json();
+        setUsername(email); // Set the username using the email after successful login
         navigation.navigate("Courts");
         console.log(data); // Example: store the authentication token or redirect to another page
       } else {
