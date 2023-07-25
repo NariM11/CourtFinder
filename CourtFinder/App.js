@@ -8,11 +8,15 @@ import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import CourtDetailsPopup from "./screens/CourtDetailsPopup";
+
 import CourtCheckInScreen from "./screens/CourtCheckInScreen"; // import CourtListScreen from "./screns/CourtListScreen";
 
 import { AuthProvider } from "./screens/AuthContext";
 
 import React, { useState } from "react";
+
+import WaitlistScreen from "./screens/WaitlistScreen";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +63,7 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>
+
   );
 }
 
