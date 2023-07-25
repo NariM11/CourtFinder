@@ -34,3 +34,5 @@ Open a terminal or command prompt and navigate to the directory where the server
 bash
 
 node server.js
+
+psql -U postgres
