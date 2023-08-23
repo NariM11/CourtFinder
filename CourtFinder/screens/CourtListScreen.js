@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -12,17 +12,16 @@ import {
   RefreshControl,
 } from "react-native";
 
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import CourtDetailsPopup from "./CourtDetailsPopup";
 
 import HomeScreen from "./HomeScreen";
 import LoginScreen from "./LoginScreen";
 
-const Tab = createBottomTabNavigator();
+// const Tab = createBottomTabNavigator();
 
 import AuthContext from "./AuthContext";
-
 
 const CourtList = ({ navigation }) => {
   const [courts, setCourts] = useState([]);
@@ -36,6 +35,10 @@ const CourtList = ({ navigation }) => {
   const [selectedCourtWaitingTime, setSelectedCourtWaitingTime] = useState(0);
 
   const [refreshing, setRefreshing] = useState(false);
+
+  const [selectedBookingType, setSelectedBookingType] = useState("");
+
+  const { loginStatus, username, setLatestBooking } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchCourts = async () => {
@@ -60,6 +63,35 @@ const CourtList = ({ navigation }) => {
     fetchCourts();
   }, []);
 
+  const addBooking = async () => {
+    try {
+      const user_email = username;
+      const court_id = selectedCourtNumber;
+      const booking_type = selectedBookingType;
+
+      console.log(user_email);
+      console.log(court_id);
+      console.log(booking_type);
+      const response = await fetch("http://localhost:5000/addbooking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+
+        body: JSON.stringify({
+          user_email,
+          court_id,
+          booking_type,
+        }),
+      });
+
+      if (response.ok) {
+        // Request was successful
+        console.log("booking added!");
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
   const handleRefresh = async () => {
     try {
       const response = await fetch("http://localhost:5000/getcourts");
@@ -77,6 +109,30 @@ const CourtList = ({ navigation }) => {
       console.error(error);
     }
   };
+
+  function handlePress(BookingType) {
+    setSelectedBookingType(BookingType);
+    console.log(BookingType);
+
+    let latestBooking = {
+      selectedCourtNumber: selectedCourtNumber,
+      bookingDateTime: new Date(),
+    };
+    setLatestBooking(latestBooking);
+
+    addBooking();
+    console.log(selectedBookingType);
+
+    if (BookingType == "checked in") {
+      navigation.navigate("Check In", { selectedCourtNumber });
+    } else {
+      navigation.navigate("Waitlist", {
+        selectedCourtNumber,
+        selectedCourtWaitingList,
+        selectedCourtWaitingTime,
+      });
+    }
+  }
 
   const renderItem = ({ item }) => {
     const isSelected = selectedCourt === item.courtNumber;
@@ -201,8 +257,11 @@ const CourtList = ({ navigation }) => {
               <Pressable
                 style={[styles.popupButton, styles.popupButtonClose]}
                 onPressIn={() =>
-                  navigation.navigate("Check In", { selectedCourtNumber })
+                  // navigation.navigate("Check In", { selectedCourtNumber })
+                  handlePress("checked in")
                 }
+                // onPress={setSelectedBookingType("checked in")}
+                // onPress={addBooking}
                 onPress={() => setAvailableModalVisible(false)}
               >
                 <Text style={styles.textStyle}>CHECK IN </Text>
@@ -248,12 +307,14 @@ const CourtList = ({ navigation }) => {
               >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
               <Pressable
                 style={[styles.popupButton, styles.popupButtonClose]}
-                onPressIn={() =>
-                  navigation.navigate("Waitlist", {
-                    selectedCourtNumber,
-                    selectedCourtWaitingList,
-                    selectedCourtWaitingTime,
-                  })
+                onPressIn={
+                  () => handlePress("waitlist")
+
+                  // navigation.navigate("Waitlist", {
+                  //   selectedCourtNumber,
+                  //   selectedCourtWaitingList,
+                  //   selectedCourtWaitingTime,
+                  // })
                 }
                 onPress={() => setWaitlistModalVisible(false)}
               >

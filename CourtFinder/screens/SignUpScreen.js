@@ -17,6 +17,7 @@ const SignUpScreen = ({ navigation }) => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setLoginStatus, setUsername, setToken } = useContext(AuthContext);
 
   const onSubmitForm = async () => {
     if (!firstName || !lastName || !email || !password) {

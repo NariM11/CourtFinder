@@ -7,11 +7,14 @@ export const AuthProvider = ({ children }) => {
   const [username, setUsername] = useState(""); // Add a new state for the username
   const [token, setToken] = useState(null);
 
+  const [latestBooking, setLatestBooking] = useState(null);
+
   const handleLogout = () => {
     // Clear the token when the user logs out
     setToken(null);
     setUsername("");
     setLoginStatus(false);
+    setLatestBooking(null);
     // You can also clear the token from AsyncStorage for persistent storage.
   };
 
@@ -24,6 +27,8 @@ export const AuthProvider = ({ children }) => {
         setUsername,
         token,
         setToken,
+        latestBooking,
+        setLatestBooking,
       }} // Include the new state and setter
     >
       {children}

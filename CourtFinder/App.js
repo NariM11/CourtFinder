@@ -17,7 +17,6 @@ import React, { useState } from "react";
 
 import WaitlistScreen from "./screens/WaitlistScreen";
 
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -60,10 +59,15 @@ export default function App() {
             name="Check In"
             component={CourtCheckInScreen}
           />
+
+          <Stack.Screen
+            options={{ headerShown: true }}
+            name="Waitlist"
+            component={WaitlistScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>
-
   );
 }
 

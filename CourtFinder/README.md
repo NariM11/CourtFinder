@@ -1,5 +1,13 @@
 Running the Expo App
 
+To start the backend server, in the server folder directory enter the following command in the terminal
+
+nodemon index.js
+
+To start the expo app (client), enter the following command in the terminal
+
+expo start
+
 To start an Expo app in Visual Studio Code (VSCode), you can follow these steps:
 
     Open VSCode and navigate to the folder where your Expo app is located. You should see the project files in the VSCode Explorer panel.

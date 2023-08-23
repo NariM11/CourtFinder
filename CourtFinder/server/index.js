@@ -99,8 +99,10 @@ app.get("/getcourts", async (req, res) => {
 
 // Helper function for calculating the current court statuses
 function estimateCourtStatus(courts, bookings) {
+  // Create a sample date (for example, "July 31, 2023 12:34:56")
   const currentTime = new Date();
   const MINUTESPERPLAY = 60;
+  const userTimezoneOffset = currentTime.getTimezoneOffset(); // Get local timezone offset in minutes
 
   for (const court of courts) {
     const courtBookings = bookings.filter(
@@ -116,7 +118,8 @@ function estimateCourtStatus(courts, bookings) {
 
     for (const booking of courtBookings) {
       const playStartTime = new Date(booking.play_start_time);
-      const playEndTime = new Date(booking.play_end_time);
+      const playEndTime =
+        new Date(booking.play_end_time) - userTimezoneOffset * 60000;
 
       if (currentTime <= playEndTime) {
         isAvailable = false;
@@ -129,9 +132,11 @@ function estimateCourtStatus(courts, bookings) {
 
     court.status = isAvailable ? "available" : "waitlist";
     court.estimatedTimeRemaining = estimatedTimeRemaining;
+
     court.numPartiesWaiting = Math.ceil(
       estimatedTimeRemaining / MINUTESPERPLAY
     );
+    //TODO Replace with court calculation
   }
 
   return courts;
@@ -184,11 +189,13 @@ app.post("/addbooking", async (req, res) => {
     );
 
     const MINUTESPERPLAY = 60;
-    var currentDateTime = new Date();
-    var startDateTime = CalculateStartDateTime(bookings, currentDateTime);
+
+    var startDateTime = CalculateStartDateTime(courtBookings);
+
     var endDateTime = new Date(
       startDateTime.getTime() + MINUTESPERPLAY * 60000
     );
+    var currentDateTime = new Date();
 
     // Insert the new booking into the bookings table
     const insertQuery =
@@ -216,14 +223,15 @@ app.post("/addbooking", async (req, res) => {
   }
 });
 
-function CalculateStartDateTime(bookings, currentDateTime) {
-  let latestEndTime = currentDateTime;
+function CalculateStartDateTime(bookings) {
+  let latestEndTime = new Date();
+  const userTimezoneOffset = latestEndTime.getTimezoneOffset(); // Get local timezone offset in minutes
 
   for (const booking of bookings) {
     const playEndTime = new Date(booking.play_end_time);
-
-    if (playEndTime > latestEndTime) {
-      latestEndTime = playEndTime;
+    const adjustedEndTime = new Date(playEndTime - userTimezoneOffset * 60000);
+    if (adjustedEndTime > latestEndTime) {
+      latestEndTime = adjustedEndTime;
     }
   }
 
