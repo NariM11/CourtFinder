@@ -50,9 +50,9 @@ export default function App() {
             />
           </Stack.Group>
 
-          <Stack.Group screenOptions={{ presentation: "modal" }}>
+          {/* <Stack.Group screenOptions={{ presentation: "modal" }}>
             <Stack.Screen name="Court Details" component={CourtDetailsPopup} />
-          </Stack.Group>
+          </Stack.Group> */}
 
           <Stack.Screen
             options={{ headerShown: true }}

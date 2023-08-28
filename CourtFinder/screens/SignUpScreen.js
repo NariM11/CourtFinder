@@ -12,6 +12,10 @@ import {
 import React, { useState, useContext } from "react";
 import AuthContext from "./AuthContext";
 
+import InputField from "../assets/components/InputField";
+
+import AuthButton from "../assets/components/AuthButton";
+
 const SignUpScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -67,41 +71,31 @@ const SignUpScreen = ({ navigation }) => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
-          <TextInput
-            placeholder="First Name"
-            placeholderTextColor={`white`}
-            onChangeText={(text) => setFirstName(text)}
-            style={input}
-          ></TextInput>
-          <TextInput
-            placeholder="Last Name"
-            placeholderTextColor={`white`}
-            onChangeText={(text) => setLastName(text)}
-            style={input}
-          ></TextInput>
-          <TextInput
-            placeholder="Email"
-            placeholderTextColor={`white`}
-            onChangeText={(text) => setEmail(text)}
-            style={input}
-          ></TextInput>
-          <TextInput
+          <InputField placeholder="First Name" onChangeText={setFirstName} />
+          <InputField placeholder="Last Name" onChangeText={setLastName} />
+          <InputField placeholder="Email" onChangeText={setEmail} />
+          <InputField
             placeholder="Password"
-            placeholderTextColor={`white`}
-            onChangeText={(text) => setPassword(text)}
-            style={input}
+            onChangeText={setPassword}
             secureTextEntry
-          ></TextInput>
+          />
         </View>
 
         <View style={buttonContainer}>
-          <TouchableOpacity
+          <AuthButton
+            onSubmitForm={onSubmitForm}
+            buttonStyle={[button, isSignUpDisabled && styles.disabledButton]}
+            buttonText="SIGN UP"
+            buttonTextStyle={buttonText}
+            isDisabled={isSignUpDisabled}
+          />
+          {/* <TouchableOpacity
             onPress={onSubmitForm}
             style={[button, isSignUpDisabled && styles.disabledButton]}
             disabled={isSignUpDisabled}
           >
             <Text style={buttonText}>SIGN UP</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -123,13 +117,13 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
 
-  input: {
-    backgroundColor: "#B9EF37",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 10,
-    marginTop: 5,
-  },
+  // input: {
+  //   backgroundColor: "#B9EF37",
+  //   paddingHorizontal: 15,
+  //   paddingVertical: 15,
+  //   borderRadius: 10,
+  //   marginTop: 5,
+  // },
 
   buttonContainer: {
     width: "60%",

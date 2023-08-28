@@ -11,6 +11,10 @@ import {
 } from "react-native";
 import React, { useState, useContext } from "react";
 
+import InputField from "../assets/components/InputField";
+
+import AuthButton from "../assets/components/AuthButton";
+
 import AuthContext from "./AuthContext";
 
 const LoginScreen = ({ navigation }) => {
@@ -63,25 +67,24 @@ const LoginScreen = ({ navigation }) => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
-          <TextInput
-            placeholder="Email"
-            placeholderTextColor={`white`}
-            onChangeText={(text) => setEmail(text)}
-            style={input}
-          ></TextInput>
-          <TextInput
+          <InputField placeholder="Email" onChangeText={setEmail} />
+          <InputField
             placeholder="Password"
-            placeholderTextColor={`white`}
-            onChangeText={(text) => setPassword(text)}
-            style={input}
+            onChangeText={setPassword}
             secureTextEntry
-          ></TextInput>
+          />
         </View>
 
         <View style={buttonContainer}>
-          <TouchableOpacity onPress={onSubmitForm} style={button}>
+          <AuthButton
+            onSubmitForm={onSubmitForm}
+            buttonStyle={button}
+            buttonText="LOG IN"
+            buttonTextStyle={buttonText}
+          />
+          {/* <TouchableOpacity onPress={onSubmitForm} style={button}>
             <Text style={buttonText}>LOG IN</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -103,13 +106,13 @@ const styles = StyleSheet.create({
     width: "80%",
   },
 
-  input: {
-    backgroundColor: "#B9EF37",
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 10,
-    marginTop: 5,
-  },
+  // input: {
+  //   backgroundColor: "#B9EF37",
+  //   paddingHorizontal: 15,
+  //   paddingVertical: 15,
+  //   borderRadius: 10,
+  //   marginTop: 5,
+  // },
 
   buttonContainer: {
     width: "60%",
