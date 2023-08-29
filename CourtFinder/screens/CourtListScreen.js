@@ -22,6 +22,7 @@ import LoginScreen from "./LoginScreen";
 // const Tab = createBottomTabNavigator();
 
 import AuthContext from "./AuthContext";
+import ModalPopUp from "../assets/components/ModalPopup";
 
 const CourtList = ({ navigation }) => {
   const [courts, setCourts] = useState([]);
@@ -219,7 +220,18 @@ const CourtList = ({ navigation }) => {
       />
 
       <View style={styles.centeredView}>
-        <Modal
+        <ModalPopUp
+          visible={availableModalVisible}
+          onRequestClose={() => setAvailableModalVisible(false)}
+          courtText={`Court ${selectedCourtNumber}`}
+          statusText="AVAILABLE"
+          waitListText={`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}
+          waitTimeText={`ESTIMATED TIME: ${selectedCourtWaitingTime}`}
+          buttonText="CHECK IN"
+          onPressButton={() => handlePress("checked in")}
+          modalView={styles.availableView}
+        />
+        {/* <Modal
           animationType="none"
           transparent={true}
           visible={availableModalVisible}
@@ -268,9 +280,20 @@ const CourtList = ({ navigation }) => {
               </Pressable>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
 
-        <Modal
+        <ModalPopUp
+          visible={waitlistModalVisible}
+          onRequestClose={() => setWaitlistModalVisible(false)}
+          courtText={`Court ${selectedCourtNumber}`}
+          statusText="WAITLIST"
+          waitListText={`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}
+          waitTimeText={`ESTIMATED TIME: ${selectedCourtWaitingTime}`}
+          buttonText="JOIN WAITLIST"
+          onPressButton={() => handlePress("waitlist")}
+          modalView={styles.waitlistView}
+        />
+        {/* <Modal
           animationType="none"
           transparent={true}
           visible={waitlistModalVisible}
@@ -322,15 +345,28 @@ const CourtList = ({ navigation }) => {
               </Pressable>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
 
-        <Modal
+        <ModalPopUp
+          visible={bookingModalVisible}
+          onRequestClose={() => setBookingModalVisible(false)}
+          courtText={`Court ${selectedCourtNumber}`}
+          statusText="WAITLIST"
+          waitListText={`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}
+          waitTimeText={`ESTIMATED TIME: ${selectedCourtWaitingTime}`}
+          buttonText="JOIN WAITLIST"
+          onPressButton={() => handlePress("waitlist")}
+          modalView={styles.bookingView}
+        />
+
+        {/* need to update with correct booking info instead of waitlist info */}
+        {/* <Modal
           animationType="none"
           transparent={true}
           visible={bookingModalVisible}
           onRequestClose={() => {
             Alert.alert("Modal has been closed.");
-            setWaitlistModalVisible(!bookingModalVisible); //
+            setBookingModalVisible(!bookingModalVisible); //
           }}
         >
           <View style={styles.centeredView}>
@@ -374,7 +410,7 @@ const CourtList = ({ navigation }) => {
               </Pressable>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>
 
       <View style={styles.bookingButtonView}>
@@ -463,12 +499,12 @@ const styles = {
     fontWeight: "bold",
   },
 
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
+  // centeredView: {
+  //   flex: 1,
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   marginTop: 22,
+  // },
   availableView: {
     margin: 20,
     backgroundColor: "#B9EF37",
@@ -517,64 +553,64 @@ const styles = {
     elevation: 5,
   },
 
-  modalHeader: {
-    flexDirection: "row",
-    marginBottom: 30,
-  },
+  // modalHeader: {
+  //   flexDirection: "row",
+  //   marginBottom: 30,
+  // },
   /* The header takes up all the vertical space not used by the close button. */
-  modalHeaderContent: {
-    flexGrow: 1,
-  },
-  modalHeaderCloseText: {
-    alignItems: "flex-end",
-    paddingLeft: 5,
-    paddingRight: 5,
-    fontWeight: "bold",
-  },
+  // modalHeaderContent: {
+  //   flexGrow: 1,
+  // },
+  // modalHeaderCloseText: {
+  //   alignItems: "flex-end",
+  //   paddingLeft: 5,
+  //   paddingRight: 5,
+  //   fontWeight: "bold",
+  // },
 
-  popupButton: {
-    padding: 10,
-    elevation: 2,
-    alignSelf: "center",
-  },
-  popupButtonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  popupButtonClose: {
-    backgroundColor: "black",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  courtText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 15,
-  },
+  // popupButton: {
+  //   padding: 10,
+  //   elevation: 2,
+  //   alignSelf: "center",
+  // },
+  // popupButtonOpen: {
+  //   backgroundColor: "#F194FF",
+  // },
+  // popupButtonClose: {
+  //   backgroundColor: "black",
+  // },
+  // textStyle: {
+  //   color: "white",
+  //   fontWeight: "bold",
+  //   textAlign: "center",
+  // },
+  // courtText: {
+  //   fontSize: 30,
+  //   fontWeight: "bold",
+  //   textAlign: "center",
+  //   marginBottom: 15,
+  // },
 
-  statusText: {
-    fontSize: 20,
-    marginBottom: 50,
-    textAlign: "center",
-    color: "white",
-  },
+  // statusText: {
+  //   fontSize: 20,
+  //   marginBottom: 50,
+  //   textAlign: "center",
+  //   color: "white",
+  // },
 
-  waitListText: {
-    fontSize: 15,
-    marginBottom: 15,
-    textAlign: "center",
-    color: "black",
-  },
+  // waitListText: {
+  //   fontSize: 15,
+  //   marginBottom: 15,
+  //   textAlign: "center",
+  //   color: "black",
+  // },
 
-  waitTimeText: {
-    fontSize: 15,
-    marginBottom: 60,
-    textAlign: "center",
-    color: "black",
-  },
+  // waitTimeText: {
+  //   fontSize: 15,
+  //   marginBottom: 60,
+  //   textAlign: "center",
+  //   color: "black",
+  // },
 
   bookingButtonView: {
     justifyContent: "center",

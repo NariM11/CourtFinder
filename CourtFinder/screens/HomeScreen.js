@@ -10,6 +10,7 @@ import {
   StatusBar,
   TouchableOpacity,
 } from "react-native";
+import HomeButton from "../assets/components/HomeButton";
 
 const HomeScreen = ({ navigation }) => {
   const {
@@ -47,7 +48,23 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={buttonContainer}>
-          <TouchableOpacity
+          <HomeButton
+            navigation={navigation}
+            screenName="Login"
+            buttonStyle={button}
+            buttonTextStyle={buttonText}
+            buttonName="LOGIN"
+          />
+
+          <HomeButton
+            navigation={navigation}
+            screenName="Sign Up"
+            buttonStyle={[button, buttonOutline]}
+            buttonTextStyle={buttonOutlineText}
+            buttonName="SIGN UP"
+          />
+
+          {/* <TouchableOpacity
             onPress={() => {
               navigation.navigate("Login");
               console.log("test");
@@ -55,8 +72,8 @@ const HomeScreen = ({ navigation }) => {
             style={button}
           >
             <Text style={buttonText}>LOGIN</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity
             onPress={() => {
               navigation.navigate("Sign Up");
               console.log("test");
@@ -64,7 +81,7 @@ const HomeScreen = ({ navigation }) => {
             style={[button, buttonOutline]}
           >
             <Text style={[buttonOutlineText]}>SIGN UP</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </ImageBackground>
     </SafeAreaView>
