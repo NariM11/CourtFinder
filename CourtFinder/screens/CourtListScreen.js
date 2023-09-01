@@ -39,7 +39,10 @@ const CourtList = ({ navigation }) => {
 
   const [selectedBookingType, setSelectedBookingType] = useState("");
 
-  const { loginStatus, username, setLatestBooking } = useContext(AuthContext);
+  const { loginStatus, username, setLatestBooking, latestBooking } =
+    useContext(AuthContext);
+
+  const isDisabled = latestBooking !== null;
 
   useEffect(() => {
     const fetchCourts = async () => {
@@ -55,6 +58,8 @@ const CourtList = ({ navigation }) => {
           estimatedWaitTime: `${court.estimatedTimeRemaining} minutes`,
         }));
 
+        setBooking();
+
         setCourts(parsedCourts);
       } catch (error) {
         console.error(error);
@@ -64,11 +69,11 @@ const CourtList = ({ navigation }) => {
     fetchCourts();
   }, []);
 
-  const addBooking = async () => {
+  const addBooking = async (bookingType) => {
     try {
       const user_email = username;
       const court_id = selectedCourtNumber;
-      const booking_type = selectedBookingType;
+      const booking_type = bookingType;
 
       console.log(user_email);
       console.log(court_id);
@@ -93,6 +98,33 @@ const CourtList = ({ navigation }) => {
     }
   };
 
+  const setBooking = async () => {
+    const user_email = username;
+    const latestBookingResponse = await fetch(
+      "http://localhost:5000/getlatestbooking",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_email }),
+      }
+    );
+
+    let current_time = new Date();
+    // const userTimezoneOffset = current_time.getTimezoneOffset(); // Get local timezone offset in minutes
+
+    const latestBookingData = await latestBookingResponse.json();
+
+    if (latestBookingData !== 0) {
+      if (new Date(latestBookingData.play_end_time) > current_time) {
+        setLatestBooking(latestBookingData);
+      } else {
+        setLatestBooking(null);
+      }
+    } else {
+      setLatestBooking(null);
+    }
+  };
+
   const handleRefresh = async () => {
     try {
       const response = await fetch("http://localhost:5000/getcourts");
@@ -105,6 +137,8 @@ const CourtList = ({ navigation }) => {
         estimatedWaitTime: `${court.estimatedTimeRemaining} minutes`,
       }));
 
+      setBooking();
+
       setCourts(parsedCourts);
     } catch (error) {
       console.error(error);
@@ -113,15 +147,16 @@ const CourtList = ({ navigation }) => {
 
   function handlePress(BookingType) {
     setSelectedBookingType(BookingType);
+
     console.log(BookingType);
 
-    let latestBooking = {
-      selectedCourtNumber: selectedCourtNumber,
-      bookingDateTime: new Date(),
-    };
-    setLatestBooking(latestBooking);
+    // let latestBooking = {
+    //   selectedCourtNumber: selectedCourtNumber,
+    //   bookingDateTime: new Date(),
+    // };
+    // setLatestBooking(latestBooking);
 
-    addBooking();
+    addBooking(BookingType);
     console.log(selectedBookingType);
 
     if (BookingType == "checked in") {
@@ -159,14 +194,17 @@ const CourtList = ({ navigation }) => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             onPress={() => {
-              if (item.available) {
-                handleAvailableButtonPress(item);
-              } else {
-                handleWaitlistButtonPress(item);
+              if (!isDisabled) {
+                if (item.available) {
+                  handleAvailableButtonPress(item);
+                } else {
+                  handleWaitlistButtonPress(item);
+                }
               }
             }}
             style={[
               styles.button,
+              isDisabled && styles.disabledButton,
               item.available ? styles.availableButton : styles.waitlistButton,
             ]}
           >
@@ -497,6 +535,10 @@ const styles = {
   buttonText: {
     color: "#FFFFFF",
     fontWeight: "bold",
+  },
+
+  disabledButton: {
+    opacity: 0.5,
   },
 
   // centeredView: {

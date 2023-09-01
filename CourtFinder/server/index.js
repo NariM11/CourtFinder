@@ -136,11 +136,50 @@ function estimateCourtStatus(courts, bookings) {
     court.numPartiesWaiting = Math.ceil(
       estimatedTimeRemaining / MINUTESPERPLAY
     );
-    //TODO Replace with court calculation
   }
 
   return courts;
 }
+
+app.post("/getlatestbooking", async (req, res) => {
+  try {
+    const { user_email } = req.body;
+
+    // Query the database to retrieve the latest booking for the given user
+    const query =
+      "SELECT * FROM bookings WHERE user_email = $1 ORDER BY booking_datetime DESC LIMIT 1";
+    const { rows: bookings } = await pool.query(query, [user_email]);
+
+    if (bookings.length === 0) {
+      res.json(0);
+      return;
+      // return res
+      //   .status(404)
+      //   .json({ message: "No bookings found for the user" });
+    }
+
+    // Send the retrieved booking as the response
+
+    const latestBooking = bookings[0];
+
+    // Convert UTC timestamps to the client's local time zone
+    const clientTimezoneOffset = new Date().getTimezoneOffset() * 60000;
+    latestBooking.booking_datetime = new Date(
+      new Date(latestBooking.booking_datetime) - clientTimezoneOffset
+    );
+    latestBooking.play_start_time = new Date(
+      new Date(latestBooking.play_start_time) - clientTimezoneOffset
+    );
+    latestBooking.play_end_time = new Date(
+      new Date(latestBooking.play_end_time) - clientTimezoneOffset
+    );
+
+    res.json(latestBooking);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 app.get("/getusers", async (req, res) => {
   try {
@@ -170,12 +209,20 @@ app.get("/getbookings", async (req, res) => {
   }
 });
 
+app.delete("/deletebooking", async (req, res) => {
+  try {
+    const { booking_id } = req.body;
+  } catch (error) {}
+});
+
 // Endpoint for adding a new booking
 app.post("/addbooking", async (req, res) => {
   try {
+    // Get courts and bookings data from the database
     const { rows: courts } = await pool.query("SELECT * FROM courts");
     const { rows: bookings } = await pool.query("SELECT * FROM bookings");
 
+    // Get get new booking data from the request
     const { user_email, court_id, booking_type } = req.body;
 
     // Check if the provided court_id exists in the courts table
@@ -184,14 +231,14 @@ app.post("/addbooking", async (req, res) => {
       return res.status(404).json({ message: "Court not found" });
     }
 
+    // Filter the retrieved bookings data to match the court id of the new booking
     const courtBookings = bookings.filter(
       (booking) => booking.court_id === court_id
     );
 
+    // Calculate start and end times for th new booking
     const MINUTESPERPLAY = 60;
-
     var startDateTime = CalculateStartDateTime(courtBookings);
-
     var endDateTime = new Date(
       startDateTime.getTime() + MINUTESPERPLAY * 60000
     );
@@ -223,6 +270,7 @@ app.post("/addbooking", async (req, res) => {
   }
 });
 
+// Takes bookings data and calculate start time for a new booking
 function CalculateStartDateTime(bookings) {
   let latestEndTime = new Date();
   const userTimezoneOffset = latestEndTime.getTimezoneOffset(); // Get local timezone offset in minutes
@@ -238,9 +286,7 @@ function CalculateStartDateTime(bookings) {
   return latestEndTime;
 }
 
-// ...
-// Other routes for check-in, join waitlist, etc.
-
+// Server launch
 app.listen(5000, () => {
   console.log("Server has started on port 5000");
 });
