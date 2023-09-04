@@ -98,6 +98,19 @@ const CourtList = ({ navigation }) => {
     }
   };
 
+  const deleteBooking = async (booking_id) => {
+    try {
+      const booking_id = booking_id;
+      const response = await fetch("http://localhost:5000/deletebooking", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ booking_id }),
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const setBooking = async () => {
     const user_email = username;
     const latestBookingResponse = await fetch(

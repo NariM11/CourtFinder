@@ -212,7 +212,28 @@ app.get("/getbookings", async (req, res) => {
 app.delete("/deletebooking", async (req, res) => {
   try {
     const { booking_id } = req.body;
-  } catch (error) {}
+
+    // Check if the booking exists
+    const checkBookingQuery = "SELECT * FROM bookings WHERE booking_id = $1";
+    const checkBookingResult = await pool.query(checkBookingQuery, [
+      booking_id,
+    ]);
+
+    if (checkBookingResult.rows.length === 0) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Delete the booking
+    const deleteBookingQuery = "DELETE FROM bookings WHERE booking_id = $1";
+    await pool.query(deleteBookingQuery, [booking_id]);
+
+    res.json({ message: "Booking deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while deleting the booking" });
+  }
 });
 
 // Endpoint for adding a new booking
