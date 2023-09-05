@@ -24,6 +24,8 @@ const WaitlistScreen = ({ route }) => {
     // add backend here
   };
 
+  // const waitingTime = parseInt(selectedCourtWaitingTime) + 60;
+
   const {
     container,
     // logo,

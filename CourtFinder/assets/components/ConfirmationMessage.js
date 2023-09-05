@@ -21,11 +21,11 @@ const ConfirmationMessage = ({
         <Text style={styles.tertiary}>{tertiaryText}</Text>
       </View>
 
-      <View style={styles.buttonContainer}>
+      {/* <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={onPressButton} style={styles.button}>
           <Text style={styles.buttonText}>{buttonText}</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -36,22 +36,22 @@ const styles = {
     marginTop: StatusBar.currentHeight || 0,
     alignContent: "center",
   },
-  buttonContainer: {
-    alignSelf: "center",
-    width: "50%",
-    flex: 3,
-  },
-  button: {
-    backgroundColor: "grey",
-    width: "100%",
-    padding: 15,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "700",
-    fontSize: 16,
-  },
+  // buttonContainer: {
+  //   alignSelf: "center",
+  //   width: "50%",
+  //   flex: 3,
+  // },
+  // button: {
+  //   backgroundColor: "grey",
+  //   width: "100%",
+  //   padding: 15,
+  //   alignItems: "center",
+  // },
+  // buttonText: {
+  //   color: "white",
+  //   fontWeight: "700",
+  //   fontSize: 16,
+  // },
   logo: {
     alignSelf: "center",
     height: 225,
