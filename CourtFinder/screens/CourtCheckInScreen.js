@@ -36,9 +36,9 @@ const CourtCheckInScreen = ({ route }) => {
       <ConfirmationMessage
         logoSource={require("../assets/logo_green.png")}
         greetingText="IT'S YOUR TURN TO PLAY"
-        primaryText="Please check in below before playing to start your session"
+        primaryText="Please head to your court now"
         secondaryText={`Court Number #${selectedCourtNumber}`}
-        tertiaryText="YOUR BOOKING IS FOR 1 HOUR"
+        tertiaryText="YOUR 1 HOUR BOOKING STARTS NOW"
         buttonText="CHECK IN"
         onPressButton={onPressCheckIn}
       />

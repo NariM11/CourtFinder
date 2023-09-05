@@ -30,6 +30,7 @@ const CourtList = ({ navigation }) => {
   const [availableModalVisible, setAvailableModalVisible] = useState(false);
   const [waitlistModalVisible, setWaitlistModalVisible] = useState(false);
   const [bookingModalVisible, setBookingModalVisible] = useState(false);
+  const [noBookingModalVisible, setNoBookingModalVisible] = useState(false);
   const [selectedCourtNumber, setSelectedCourtNumber] = useState(0);
 
   const [selectedCourtWaitingList, setSelectedCourtWaitingList] = useState(0);
@@ -43,6 +44,36 @@ const CourtList = ({ navigation }) => {
     useContext(AuthContext);
 
   const isDisabled = latestBooking !== null;
+
+  const booked_court = latestBooking ? latestBooking.court_id : "N/A";
+
+  const booked_type = latestBooking ? latestBooking.booking_type : "N/A";
+
+  const booked_ending_time = latestBooking
+    ? new Date(latestBooking.play_end_time)
+    : "N/A";
+
+  const booked_id = latestBooking ? latestBooking.booking_id : "N/A";
+
+  const MINUTESPERPLAY = 60;
+
+  let time_remaining;
+
+  if (booked_ending_time === "N/A") {
+    time_remaining = "N/A";
+  } else {
+    time_remaining = Math.ceil(
+      (new Date(booked_ending_time) - new Date()) / 1000 / MINUTESPERPLAY
+    );
+  }
+
+  let numPartiesWaiting;
+
+  if (time_remaining === "N/A") {
+    numPartiesWaiting = 0;
+  } else {
+    numPartiesWaiting = Math.ceil(time_remaining / MINUTESPERPLAY);
+  }
 
   useEffect(() => {
     const fetchCourts = async () => {
@@ -199,7 +230,7 @@ const CourtList = ({ navigation }) => {
           Court # {item.courtNumber}
         </Text>
         <Text style={styles.waitingListParties}>
-          {item.waitingListParties} PARTIES IN WAITING LIST
+          {item.waitingListParties} PARTIES IN FRONT
         </Text>
         <Text style={styles.estimatedWaitTime}>
           ESTIMATED TIME: {item.estimatedWaitTime}
@@ -245,11 +276,23 @@ const CourtList = ({ navigation }) => {
   };
 
   const handleBookingButtonPress = () => {
-    setBookingModalVisible(true);
+    if (latestBooking !== null) {
+      setBookingModalVisible(true);
+    } else {
+      setNoBookingModalVisible(true);
+    }
+  };
+
+  const handleCancelButtonPress = () => {
+    if (latestBooking !== null) {
+      console.log(booked_id);
+      deleteBooking(booked_id);
+    }
   };
 
   return (
     // replace with <CourtDetailsPopUp/> and import at top
+
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Image
@@ -276,7 +319,7 @@ const CourtList = ({ navigation }) => {
           onRequestClose={() => setAvailableModalVisible(false)}
           courtText={`Court ${selectedCourtNumber}`}
           statusText="AVAILABLE"
-          waitListText={`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}
+          waitListText={`${selectedCourtWaitingList} PARTIES IN FRONT`}
           waitTimeText={`ESTIMATED TIME: ${selectedCourtWaitingTime}`}
           buttonText="CHECK IN"
           onPressButton={() => handlePress("checked in")}
@@ -338,7 +381,7 @@ const CourtList = ({ navigation }) => {
           onRequestClose={() => setWaitlistModalVisible(false)}
           courtText={`Court ${selectedCourtNumber}`}
           statusText="WAITLIST"
-          waitListText={`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}
+          waitListText={`${selectedCourtWaitingList} PARTIES IN FRONT`}
           waitTimeText={`ESTIMATED TIME: ${selectedCourtWaitingTime}`}
           buttonText="JOIN WAITLIST"
           onPressButton={() => handlePress("waitlist")}
@@ -401,13 +444,31 @@ const CourtList = ({ navigation }) => {
         <ModalPopUp
           visible={bookingModalVisible}
           onRequestClose={() => setBookingModalVisible(false)}
-          courtText={`Court ${selectedCourtNumber}`}
-          statusText="WAITLIST"
-          waitListText={`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}
-          waitTimeText={`ESTIMATED TIME: ${selectedCourtWaitingTime}`}
-          buttonText="JOIN WAITLIST"
-          onPressButton={() => handlePress("waitlist")}
+          courtText={`Court ${booked_court}`}
+          statusText={`Booking Type: ${booked_type.toUpperCase()}`}
+          waitListText={`${numPartiesWaiting - 1} PARTIES IN FRONT`}
+          waitTimeText={
+            time_remaining <= 60
+              ? `REMAINING TIME: ${time_remaining} MINUTES`
+              : `WAITING TIME: ${time_remaining - 60} MINUTES`
+          }
+          buttonText="CANCEL"
+          onPressButton={() => handleCancelButtonPress()}
           modalView={styles.bookingView}
+        />
+
+        <ModalPopUp
+          visible={noBookingModalVisible}
+          onRequestClose={() => setNoBookingModalVisible(false)}
+          // courtText="NO BOOKINGS"
+          // statusText={`Booking Type: ${booked_type.toUpperCase()}`}
+          // // waitListText={`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}
+          // waitTimeText={`REMAINING TIME: ${time_remaining} MINUTES`}
+          // buttonText="CANCEL"
+          // onPressButton={() => handlePress("waitlist")}
+          noBookingText="YOU HAVE NO BOOKINGS"
+          noBooking={true}
+          modalView={styles.noBookingView}
         />
 
         {/* need to update with correct booking info instead of waitlist info */}
@@ -593,6 +654,22 @@ const styles = {
   },
 
   bookingView: {
+    margin: 20,
+    backgroundColor: "#F8602F",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "left",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  noBookingView: {
     margin: 20,
     backgroundColor: "#F8602F",
     borderRadius: 20,

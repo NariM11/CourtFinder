@@ -17,6 +17,8 @@ const ModalPopUp = (props) => {
     waitListText,
     waitTimeText,
     buttonText,
+    noBookingText,
+    noBooking,
     onPressButton,
     modalView,
   } = props;
@@ -36,15 +38,20 @@ const ModalPopUp = (props) => {
               <Text style={styles.modalHeaderCloseText}>X</Text>
             </TouchableOpacity>
           </View>
-          <Text style={styles.courtText}>{courtText}</Text>
+          <Text style={!noBooking && styles.courtText}>{courtText}</Text>
 
-          <Text style={styles.statusText}>{statusText}</Text>
+          <Text style={!noBooking && styles.statusText}>{statusText}</Text>
 
-          <Text style={styles.waitListText}>{waitListText}</Text>
+          <Text style={!noBooking && styles.waitListText}>{waitListText}</Text>
 
-          <Text style={styles.waitTimeText}>{waitTimeText}</Text>
+          <Text style={!noBooking && styles.waitTimeText}>{waitTimeText}</Text>
+
+          <Text style={styles.noBookingText}>{noBookingText}</Text>
           <Pressable
-            style={[styles.popupButton, styles.popupButtonClose]}
+            style={[
+              !noBooking && styles.popupButton,
+              !noBooking && styles.popupButtonClose,
+            ]}
             onPressIn={onPressButton}
             onPress={onRequestClose}
           >
@@ -119,6 +126,16 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     textAlign: "center",
     color: "black",
+  },
+
+  noBookingText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "black",
+    marginBottom: 60,
+    alignSelf: "center", // Center horizontally
+    justifyContent: "center", // Center vertically
   },
 });
 
