@@ -100,12 +100,19 @@ const CourtList = ({ navigation }) => {
 
   const deleteBooking = async (booking_id) => {
     try {
-      const booking_id = booking_id;
+      console.log(booking_id);
       const response = await fetch("http://localhost:5000/deletebooking", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ booking_id }),
       });
+
+      if (response.ok) {
+        // Request was successful
+        console.log("booking deleted!");
+      } else {
+        console.log("Failed to delete booking.");
+      }
     } catch (error) {
       console.error(error);
     }
