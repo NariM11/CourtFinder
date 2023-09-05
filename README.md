@@ -116,8 +116,6 @@ Use this space to show useful examples of how a project can be used. Additional 
 - Valeriya Ten (UI/UX Designer)
 - Deewai Abdullahi (Project Mentor)
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
-
 <!-- CONTACT -->
 
 ## Contact
