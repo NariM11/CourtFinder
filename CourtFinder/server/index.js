@@ -31,6 +31,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// User JWT verification helper function
 const verifyJWT = (req, res, next) => {
   const token = req.headers["x-access-token"];
   if (!token) {
@@ -53,6 +54,7 @@ const verifyJWT = (req, res, next) => {
   }
 };
 
+// User JWT verification
 app.get("/isUserAuth", verifyJWT, (req, res) => {
   res.send("User is authenticated");
 });
@@ -105,17 +107,19 @@ function estimateCourtStatus(courts, bookings) {
   const userTimezoneOffset = currentTime.getTimezoneOffset(); // Get local timezone offset in minutes
 
   for (const court of courts) {
+    // Filter bookings to match the given court
     const courtBookings = bookings.filter(
       (booking) => booking.court_id === court.id
     );
 
+    // Sort bookings from latest to oldest
     courtBookings.sort(
       (a, b) => new Date(b.booking_datetime) - new Date(a.booking_datetime)
     );
 
     let isAvailable = true;
     let estimatedTimeRemaining = 0;
-
+    // Estimate court status by calculating end and start times by going through the court's latest bookings
     for (const booking of courtBookings) {
       const playStartTime = new Date(booking.play_start_time);
       const playEndTime =
@@ -130,9 +134,9 @@ function estimateCourtStatus(courts, bookings) {
       }
     }
 
+    // Populate court attributes
     court.status = isAvailable ? "available" : "waitlist";
     court.estimatedTimeRemaining = estimatedTimeRemaining;
-
     court.numPartiesWaiting = Math.ceil(
       estimatedTimeRemaining / MINUTESPERPLAY
     );
@@ -141,6 +145,7 @@ function estimateCourtStatus(courts, bookings) {
   return courts;
 }
 
+// Retrieve latest booking from the database
 app.post("/getlatestbooking", async (req, res) => {
   try {
     const { user_email } = req.body;
@@ -153,13 +158,9 @@ app.post("/getlatestbooking", async (req, res) => {
     if (bookings.length === 0) {
       res.json(0);
       return;
-      // return res
-      //   .status(404)
-      //   .json({ message: "No bookings found for the user" });
     }
 
-    // Send the retrieved booking as the response
-
+    // Get the latest booking from the list of bookings
     const latestBooking = bookings[0];
 
     // Convert UTC timestamps to the client's local time zone
@@ -174,6 +175,7 @@ app.post("/getlatestbooking", async (req, res) => {
       new Date(latestBooking.play_end_time) - clientTimezoneOffset
     );
 
+    // Send the retrieved booking as the response
     res.json(latestBooking);
   } catch (error) {
     console.error(error);
@@ -181,6 +183,7 @@ app.post("/getlatestbooking", async (req, res) => {
   }
 });
 
+// Get all users data
 app.get("/getusers", async (req, res) => {
   try {
     // Query the database to retrieve users
@@ -195,6 +198,7 @@ app.get("/getusers", async (req, res) => {
   }
 });
 
+// Get all bookings data
 app.get("/getbookings", async (req, res) => {
   try {
     // Query the database to retrieve courts
@@ -209,6 +213,7 @@ app.get("/getbookings", async (req, res) => {
   }
 });
 
+// Endpoint for deleting a booking from the database that matches to a given booking_id if it exists in the database
 app.delete("/deletebooking", async (req, res) => {
   try {
     const { booking_id } = req.body;
