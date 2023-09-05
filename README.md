@@ -64,7 +64,7 @@ Solution: Designing a mobile application to track waiting lists. The user would 
 ### Built With
 
 - Primary language: JavaScript
-- Back-end: Node JS, Next.js
+- Back-end: Node.js, Next.js
 - Front-end: React Native
 - Database: PostgresSQL
 
