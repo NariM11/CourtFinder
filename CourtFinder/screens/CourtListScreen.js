@@ -5,25 +5,14 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  Alert,
-  Modal,
-  Pressable,
   SafeAreaView,
   RefreshControl,
 } from "react-native";
 
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Feather } from "@expo/vector-icons";
-import CourtDetailsPopup from "./CourtDetailsPopup";
-
-import HomeScreen from "./HomeScreen";
-import LoginScreen from "./LoginScreen";
-
-// const Tab = createBottomTabNavigator();
-
 import AuthContext from "./AuthContext";
-import ModalPopUp from "../assets/components/ModalPopup";
+import ModalPopUp from "../components/ModalPopup";
 
+// court list screen that shows up when login or sign up
 const CourtList = ({ navigation }) => {
   const [courts, setCourts] = useState([]);
   const [selectedCourt, setSelectedCourt] = useState(null);
@@ -45,6 +34,7 @@ const CourtList = ({ navigation }) => {
 
   const isDisabled = latestBooking !== null;
 
+  // because latestBooking can be null (if no booking) so need if statement to access user's booking info
   const booked_court = latestBooking ? latestBooking.court_id : "N/A";
 
   const booked_type = latestBooking ? latestBooking.booking_type : "N/A";
@@ -57,6 +47,7 @@ const CourtList = ({ navigation }) => {
 
   const MINUTESPERPLAY = 60;
 
+  // calculating time remaining for bookings popup based on the user's booking info (AuthContext)
   let time_remaining;
 
   if (booked_ending_time === "N/A") {
@@ -67,6 +58,7 @@ const CourtList = ({ navigation }) => {
     );
   }
 
+  // calculating parties waiting for bookings popup based on the user's booking info (AuthContext)
   let numPartiesWaiting;
 
   if (time_remaining === "N/A") {
@@ -75,6 +67,7 @@ const CourtList = ({ navigation }) => {
     numPartiesWaiting = Math.ceil(time_remaining / MINUTESPERPLAY);
   }
 
+  // loads court data with API call
   useEffect(() => {
     const fetchCourts = async () => {
       try {
@@ -100,6 +93,7 @@ const CourtList = ({ navigation }) => {
     fetchCourts();
   }, []);
 
+  // add a booking with user's AuthContext data
   const addBooking = async (bookingType) => {
     try {
       const user_email = username;
@@ -129,6 +123,7 @@ const CourtList = ({ navigation }) => {
     }
   };
 
+  // delete booking using user's booking details (AuthContext)
   const deleteBooking = async (booking_id) => {
     try {
       console.log(booking_id);
@@ -149,6 +144,7 @@ const CourtList = ({ navigation }) => {
     }
   };
 
+  // set booking for user (for AuthContext)
   const setBooking = async () => {
     const user_email = username;
     const latestBookingResponse = await fetch(
@@ -176,6 +172,7 @@ const CourtList = ({ navigation }) => {
     }
   };
 
+  // for refreshing CourtListScreen when pull down screen
   const handleRefresh = async () => {
     try {
       const response = await fetch("http://localhost:5000/getcourts");
@@ -196,6 +193,7 @@ const CourtList = ({ navigation }) => {
     }
   };
 
+  // for adding booking when press button and moving to confirmation message
   function handlePress(BookingType) {
     setSelectedBookingType(BookingType);
 
@@ -221,6 +219,7 @@ const CourtList = ({ navigation }) => {
     }
   }
 
+  // rendering all the courts
   const renderItem = ({ item }) => {
     const isSelected = selectedCourt === item.courtNumber;
 
@@ -242,6 +241,8 @@ const CourtList = ({ navigation }) => {
         <Text style={styles.estimatedWaitTime}>
           ESTIMATED TIME: {item.estimatedWaitTime}
         </Text>
+
+        {/* depending on whether item is available or not, different button action */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             onPress={() => {
@@ -268,6 +269,7 @@ const CourtList = ({ navigation }) => {
     );
   };
 
+  // when press available button, make available popup visible with selected court details passed on
   const handleAvailableButtonPress = (item) => {
     setAvailableModalVisible(true);
     setSelectedCourtNumber(item.courtNumber);
@@ -275,6 +277,7 @@ const CourtList = ({ navigation }) => {
     setSelectedCourtWaitingTime(item.estimatedWaitTime);
   };
 
+  // when press available button, make waitlist popup visible with selected court details passed on
   const handleWaitlistButtonPress = (item) => {
     setWaitlistModalVisible(true);
     setSelectedCourtNumber(item.courtNumber);
@@ -282,6 +285,7 @@ const CourtList = ({ navigation }) => {
     setSelectedCourtWaitingTime(item.estimatedWaitTime);
   };
 
+  // when press your bookings button, make your bookings popup visible if latestBooking is not null (ie user has a booking)
   const handleBookingButtonPress = () => {
     if (latestBooking !== null) {
       setBookingModalVisible(true);
@@ -290,6 +294,7 @@ const CourtList = ({ navigation }) => {
     }
   };
 
+  // when press cancel button, cancel booking if latestBooking is not null (ie user has a booking)
   const handleCancelButtonPress = () => {
     if (latestBooking !== null) {
       console.log(booked_id);
@@ -298,8 +303,6 @@ const CourtList = ({ navigation }) => {
   };
 
   return (
-    // replace with <CourtDetailsPopUp/> and import at top
-
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Image
@@ -310,6 +313,8 @@ const CourtList = ({ navigation }) => {
 
       <Text style={styles.title}>SELECT COURT</Text>
       <View style={styles.titleSpacing} />
+
+      {/* to render a list of courts, refresh control lets you pull down screen to refresh data */}
       <FlatList
         data={courts}
         renderItem={renderItem}
@@ -321,6 +326,7 @@ const CourtList = ({ navigation }) => {
       />
 
       <View style={styles.centeredView}>
+        {/* popup that appears when press available button */}
         <ModalPopUp
           visible={availableModalVisible}
           onRequestClose={() => setAvailableModalVisible(false)}
@@ -332,57 +338,8 @@ const CourtList = ({ navigation }) => {
           onPressButton={() => handlePress("checked in")}
           modalView={styles.availableView}
         />
-        {/* <Modal
-          animationType="none"
-          transparent={true}
-          visible={availableModalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setAvailableModalVisible(!availableModalVisible); //
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.availableView}>
-              <View style={styles.modalHeader}>
-                <View style={styles.modalHeaderContent}></View>
-                <TouchableOpacity
-                  onPress={() => {
-                    setAvailableModalVisible(false);
-                    console.log("test");
-                  }}
-                >
-                  <Text style={styles.modalHeaderCloseText}>X</Text>
-                </TouchableOpacity>
-              </View>
-              <Text
-                style={styles.courtText}
-              >{`Court ${selectedCourtNumber}`}</Text>
 
-              <Text style={styles.statusText}>AVAILABLE</Text>
-
-              <Text
-                style={styles.waitListText}
-              >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
-
-              <Text
-                style={styles.waitTimeText}
-              >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
-              <Pressable
-                style={[styles.popupButton, styles.popupButtonClose]}
-                onPressIn={() =>
-                  // navigation.navigate("Check In", { selectedCourtNumber })
-                  handlePress("checked in")
-                }
-                // onPress={setSelectedBookingType("checked in")}
-                // onPress={addBooking}
-                onPress={() => setAvailableModalVisible(false)}
-              >
-                <Text style={styles.textStyle}>CHECK IN </Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal> */}
-
+        {/* popup that appears when press waitlist button */}
         <ModalPopUp
           visible={waitlistModalVisible}
           onRequestClose={() => setWaitlistModalVisible(false)}
@@ -394,60 +351,8 @@ const CourtList = ({ navigation }) => {
           onPressButton={() => handlePress("waitlist")}
           modalView={styles.waitlistView}
         />
-        {/* <Modal
-          animationType="none"
-          transparent={true}
-          visible={waitlistModalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setWaitlistModalVisible(!waitlistModalVisible); //
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.waitlistView}>
-              <View style={styles.modalHeader}>
-                <View style={styles.modalHeaderContent}></View>
-                <TouchableOpacity
-                  onPress={() => {
-                    setWaitlistModalVisible(false);
-                    console.log("test");
-                  }}
-                >
-                  <Text style={styles.modalHeaderCloseText}>X</Text>
-                </TouchableOpacity>
-              </View>
-              <Text
-                style={styles.courtText}
-              >{`Court ${selectedCourtNumber}`}</Text>
 
-              <Text style={styles.statusText}>WAITLIST</Text>
-
-              <Text
-                style={styles.waitListText}
-              >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
-
-              <Text
-                style={styles.waitTimeText}
-              >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
-              <Pressable
-                style={[styles.popupButton, styles.popupButtonClose]}
-                onPressIn={
-                  () => handlePress("waitlist")
-
-                  // navigation.navigate("Waitlist", {
-                  //   selectedCourtNumber,
-                  //   selectedCourtWaitingList,
-                  //   selectedCourtWaitingTime,
-                  // })
-                }
-                onPress={() => setWaitlistModalVisible(false)}
-              >
-                <Text style={styles.textStyle}>JOIN WAITLIST</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal> */}
-
+        {/* popup that appears when press your bookings button if user has booking */}
         <ModalPopUp
           visible={bookingModalVisible}
           onRequestClose={() => setBookingModalVisible(false)}
@@ -464,75 +369,18 @@ const CourtList = ({ navigation }) => {
           modalView={styles.bookingView}
         />
 
+        {/* popup that appears when press your bookings button if user has no booking */}
         <ModalPopUp
           visible={noBookingModalVisible}
           onRequestClose={() => setNoBookingModalVisible(false)}
-          // courtText="NO BOOKINGS"
-          // statusText={`Booking Type: ${booked_type.toUpperCase()}`}
-          // // waitListText={`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}
-          // waitTimeText={`REMAINING TIME: ${time_remaining} MINUTES`}
-          // buttonText="CANCEL"
-          // onPressButton={() => handlePress("waitlist")}
           noBookingText="YOU HAVE NO BOOKINGS"
           noBooking={true}
           modalView={styles.noBookingView}
         />
-
-        {/* need to update with correct booking info instead of waitlist info */}
-        {/* <Modal
-          animationType="none"
-          transparent={true}
-          visible={bookingModalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setBookingModalVisible(!bookingModalVisible); //
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.bookingView}>
-              <View style={styles.modalHeader}>
-                <View style={styles.modalHeaderContent}></View>
-                <TouchableOpacity
-                  onPress={() => {
-                    setBookingModalVisible(false);
-                    console.log("test");
-                  }}
-                >
-                  <Text style={styles.modalHeaderCloseText}>X</Text>
-                </TouchableOpacity>
-              </View>
-              <Text
-                style={styles.courtText}
-              >{`Court ${selectedCourtNumber}`}</Text>
-
-              <Text style={styles.statusText}>WAITLIST</Text>
-
-              <Text
-                style={styles.waitListText}
-              >{`${selectedCourtWaitingList} PARTIES IN THE WAITING LIST`}</Text>
-
-              <Text
-                style={styles.waitTimeText}
-              >{`ESTIMATED TIME: ${selectedCourtWaitingTime}`}</Text>
-              <Pressable
-                style={[styles.popupButton, styles.popupButtonClose]}
-                onPressIn={() =>
-                  navigation.navigate("Waitlist", {
-                    selectedCourtNumber,
-                    selectedCourtWaitingList,
-                    selectedCourtWaitingTime,
-                  })
-                }
-                onPress={() => setWaitlistModalVisible(false)}
-              >
-                <Text style={styles.textStyle}>JOIN WAITLIST</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal> */}
       </View>
 
       <View style={styles.bookingButtonView}>
+        {/* the your bookings button */}
         <TouchableOpacity
           onPress={() => {
             handleBookingButtonPress();
@@ -565,7 +413,7 @@ const styles = {
     justifyContent: "center",
   },
   title: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "bold",
     textAlign: "left",
   },
@@ -579,12 +427,12 @@ const styles = {
     backgroundColor: "rgba(185, 239, 55, 0.4)", // Set the background color with opacity
     borderRadius: 8,
     padding: 16,
-    marginBottom: 50,
+    marginBottom: 40,
     marginRight: 20,
     marginL: 20,
   },
   courtNumber: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold",
   },
   selectedCourtNumber: {
@@ -592,9 +440,11 @@ const styles = {
   },
 
   waitingListParties: {
+    fontSize: 18,
     marginTop: 8,
   },
   estimatedWaitTime: {
+    fontSize: 18,
     marginTop: 8,
   },
   buttonContainer: {
@@ -614,6 +464,7 @@ const styles = {
     backgroundColor: "#EFBB37",
   },
   buttonText: {
+    fontSize: 15,
     color: "#FFFFFF",
     fontWeight: "bold",
   },
@@ -622,12 +473,13 @@ const styles = {
     opacity: 0.5,
   },
 
-  // centeredView: {
-  //   flex: 1,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   marginTop: 22,
-  // },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+
   availableView: {
     margin: 20,
     backgroundColor: "#B9EF37",
@@ -691,65 +543,6 @@ const styles = {
     shadowRadius: 4,
     elevation: 5,
   },
-
-  // modalHeader: {
-  //   flexDirection: "row",
-  //   marginBottom: 30,
-  // },
-  /* The header takes up all the vertical space not used by the close button. */
-  // modalHeaderContent: {
-  //   flexGrow: 1,
-  // },
-  // modalHeaderCloseText: {
-  //   alignItems: "flex-end",
-  //   paddingLeft: 5,
-  //   paddingRight: 5,
-  //   fontWeight: "bold",
-  // },
-
-  // popupButton: {
-  //   padding: 10,
-  //   elevation: 2,
-  //   alignSelf: "center",
-  // },
-  // popupButtonOpen: {
-  //   backgroundColor: "#F194FF",
-  // },
-  // popupButtonClose: {
-  //   backgroundColor: "black",
-  // },
-  // textStyle: {
-  //   color: "white",
-  //   fontWeight: "bold",
-  //   textAlign: "center",
-  // },
-  // courtText: {
-  //   fontSize: 30,
-  //   fontWeight: "bold",
-  //   textAlign: "center",
-  //   marginBottom: 15,
-  // },
-
-  // statusText: {
-  //   fontSize: 20,
-  //   marginBottom: 50,
-  //   textAlign: "center",
-  //   color: "white",
-  // },
-
-  // waitListText: {
-  //   fontSize: 15,
-  //   marginBottom: 15,
-  //   textAlign: "center",
-  //   color: "black",
-  // },
-
-  // waitTimeText: {
-  //   fontSize: 15,
-  //   marginBottom: 60,
-  //   textAlign: "center",
-  //   color: "black",
-  // },
 
   bookingButtonView: {
     justifyContent: "center",

@@ -7,7 +7,6 @@ import CourtListScreen from "./screens/CourtListScreen";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignUpScreen from "./screens/SignUpScreen";
-import CourtDetailsPopup from "./screens/CourtDetailsPopup";
 
 import CourtCheckInScreen from "./screens/CourtCheckInScreen"; // import CourtListScreen from "./screns/CourtListScreen";
 

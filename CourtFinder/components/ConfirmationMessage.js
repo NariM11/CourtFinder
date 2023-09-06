@@ -1,5 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StatusBar } from "react-native";
+import { View, Text, Image, StatusBar } from "react-native";
+
+// confirmation message when you book a court or book a waitlist (used in CourtCheckinScreen or WaitlistScreen)
+// props are passed in from CourtCheckinScreen or WaitlistScreen and used in {blue portion} ie ({logoSource})
 
 const ConfirmationMessage = ({
   logoSource,
@@ -7,8 +10,6 @@ const ConfirmationMessage = ({
   primaryText,
   secondaryText,
   tertiaryText,
-  buttonText,
-  onPressButton,
 }) => {
   return (
     <View style={styles.container}>
@@ -20,12 +21,6 @@ const ConfirmationMessage = ({
         <Text style={styles.secondary}>{secondaryText}</Text>
         <Text style={styles.tertiary}>{tertiaryText}</Text>
       </View>
-
-      {/* <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={onPressButton} style={styles.button}>
-          <Text style={styles.buttonText}>{buttonText}</Text>
-        </TouchableOpacity>
-      </View> */}
     </View>
   );
 };
@@ -36,22 +31,6 @@ const styles = {
     marginTop: StatusBar.currentHeight || 0,
     alignContent: "center",
   },
-  // buttonContainer: {
-  //   alignSelf: "center",
-  //   width: "50%",
-  //   flex: 3,
-  // },
-  // button: {
-  //   backgroundColor: "grey",
-  //   width: "100%",
-  //   padding: 15,
-  //   alignItems: "center",
-  // },
-  // buttonText: {
-  //   color: "white",
-  //   fontWeight: "700",
-  //   fontSize: 16,
-  // },
   logo: {
     alignSelf: "center",
     height: 225,
