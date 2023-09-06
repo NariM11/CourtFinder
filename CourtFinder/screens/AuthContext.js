@@ -1,5 +1,6 @@
 import React, { createContext, useState } from "react";
 
+// so can keep track of user data throughout entire app
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {

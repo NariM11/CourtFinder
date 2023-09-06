@@ -8,10 +8,11 @@ import {
   ImageBackground,
   Image,
   StatusBar,
-  TouchableOpacity,
 } from "react-native";
-import HomeButton from "../assets/components/HomeButton";
 
+import HomeButton from "../components/HomeButton";
+
+// home screen that shows up when open app
 const HomeScreen = ({ navigation }) => {
   const {
     container,
@@ -48,6 +49,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <View style={buttonContainer}>
+          {/* login button */}
           <HomeButton
             navigation={navigation}
             screenName="Login"
@@ -56,6 +58,7 @@ const HomeScreen = ({ navigation }) => {
             buttonName="LOGIN"
           />
 
+          {/* sign up button */}
           <HomeButton
             navigation={navigation}
             screenName="Sign Up"
@@ -63,25 +66,6 @@ const HomeScreen = ({ navigation }) => {
             buttonTextStyle={buttonOutlineText}
             buttonName="SIGN UP"
           />
-
-          {/* <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Login");
-              console.log("test");
-            }}
-            style={button}
-          >
-            <Text style={buttonText}>LOGIN</Text>
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Sign Up");
-              console.log("test");
-            }}
-            style={[button, buttonOutline]}
-          >
-            <Text style={[buttonOutlineText]}>SIGN UP</Text>
-          </TouchableOpacity> */}
         </View>
       </ImageBackground>
     </SafeAreaView>
@@ -132,13 +116,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 18,
   },
 
   buttonOutlineText: {
     color: "black",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 18,
   },
 
   logo: {
@@ -154,14 +138,15 @@ const styles = StyleSheet.create({
   greeting: {
     alignSelf: "center",
     color: "white",
-    fontSize: 22,
+    fontSize: 30,
     marginBottom: 20,
   },
 
   question: {
     alignSelf: "center",
     color: "black",
-    fontSize: 15,
+    fontSize: 25,
+    textAlign: "center",
   },
 
   buttonWrapper: {

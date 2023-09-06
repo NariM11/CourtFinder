@@ -1,9 +1,6 @@
 import {
   KeyboardAvoidingView,
   StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
   View,
   Image,
   StatusBar,
@@ -11,17 +8,19 @@ import {
 } from "react-native";
 import React, { useState, useContext } from "react";
 
-import InputField from "../assets/components/InputField";
+import InputField from "../components/InputField";
 
-import AuthButton from "../assets/components/AuthButton";
+import AuthButton from "../components/AuthButton";
 
 import AuthContext from "./AuthContext";
 
+// login screen that shows up when press login in button on home screen
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setLoginStatus, setUsername, setToken } = useContext(AuthContext);
 
+  // send data from input fields to check if login was successful
   const onSubmitForm = async () => {
     try {
       const response = await fetch("http://localhost:5000/login", {
@@ -54,7 +53,6 @@ const LoginScreen = ({ navigation }) => {
   const {
     container,
     inputContainer,
-    input,
     buttonContainer,
     button,
     buttonText,
@@ -67,7 +65,9 @@ const LoginScreen = ({ navigation }) => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
+          {/* inputfield for email */}
           <InputField placeholder="Email" onChangeText={setEmail} />
+          {/* inputfield for email */}
           <InputField
             placeholder="Password"
             onChangeText={setPassword}
@@ -76,15 +76,13 @@ const LoginScreen = ({ navigation }) => {
         </View>
 
         <View style={buttonContainer}>
+          {/* button for logging in */}
           <AuthButton
             onSubmitForm={onSubmitForm}
             buttonStyle={button}
             buttonText="LOG IN"
             buttonTextStyle={buttonText}
           />
-          {/* <TouchableOpacity onPress={onSubmitForm} style={button}>
-            <Text style={buttonText}>LOG IN</Text>
-          </TouchableOpacity> */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -105,15 +103,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: "80%",
   },
-
-  // input: {
-  //   backgroundColor: "#B9EF37",
-  //   paddingHorizontal: 15,
-  //   paddingVertical: 15,
-  //   borderRadius: 10,
-  //   marginTop: 5,
-  // },
-
   buttonContainer: {
     width: "60%",
     justifyContent: "center",
@@ -139,13 +128,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 18,
   },
 
   buttonOutlineText: {
     color: "black",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 18,
   },
 
   logo: {

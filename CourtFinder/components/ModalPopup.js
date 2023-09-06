@@ -8,6 +8,9 @@ import {
   Pressable,
 } from "react-native";
 
+// modal popup component (used in CourtListScreen)
+// props are passed in from CourtListScreen and used in {blue portion} ie ({onRequestClose})
+
 const ModalPopUp = (props) => {
   const {
     visible,
@@ -97,6 +100,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: "white",
+    fontSize: 15,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -108,22 +112,22 @@ const styles = StyleSheet.create({
   },
 
   statusText: {
-    fontSize: 20,
+    fontSize: 22,
     marginBottom: 50,
     textAlign: "center",
     color: "white",
   },
 
   waitListText: {
-    fontSize: 15,
+    fontSize: 20,
     marginBottom: 15,
     textAlign: "center",
     color: "black",
   },
 
   waitTimeText: {
-    fontSize: 15,
-    marginBottom: 60,
+    fontSize: 20,
+    marginBottom: 10,
     textAlign: "center",
     color: "black",
   },

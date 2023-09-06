@@ -12,10 +12,11 @@ import {
 import React, { useState, useContext } from "react";
 import AuthContext from "./AuthContext";
 
-import InputField from "../assets/components/InputField";
+import InputField from "../components/InputField";
 
-import AuthButton from "../assets/components/AuthButton";
+import AuthButton from "../components/AuthButton";
 
+// sign up screen that shows up when press sign up button on home screen
 const SignUpScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -23,6 +24,7 @@ const SignUpScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const { setLoginStatus, setUsername, setToken } = useContext(AuthContext);
 
+  // send data from input fields to check if sign up was successful
   const onSubmitForm = async () => {
     if (!firstName || !lastName || !email || !password) {
       console.log("All fields are required");
@@ -56,7 +58,6 @@ const SignUpScreen = ({ navigation }) => {
   const {
     container,
     inputContainer,
-    input,
     buttonContainer,
     button,
     buttonText,
@@ -64,6 +65,7 @@ const SignUpScreen = ({ navigation }) => {
     logo,
   } = styles;
 
+  // to make button disabled if missing a field
   const isSignUpDisabled = !firstName || !lastName || !email || !password;
 
   return (
@@ -71,9 +73,16 @@ const SignUpScreen = ({ navigation }) => {
       <Image source={require("../assets/logo_green.png")} style={logo}></Image>
       <KeyboardAvoidingView style={container} behavior="padding">
         <View style={inputContainer}>
+          {/* input field for first name */}
           <InputField placeholder="First Name" onChangeText={setFirstName} />
+
+          {/* input field for last name */}
           <InputField placeholder="Last Name" onChangeText={setLastName} />
+
+          {/* input field for email */}
           <InputField placeholder="Email" onChangeText={setEmail} />
+
+          {/* input field for password */}
           <InputField
             placeholder="Password"
             onChangeText={setPassword}
@@ -82,6 +91,7 @@ const SignUpScreen = ({ navigation }) => {
         </View>
 
         <View style={buttonContainer}>
+          {/* sign up button */}
           <AuthButton
             onSubmitForm={onSubmitForm}
             buttonStyle={[button, isSignUpDisabled && styles.disabledButton]}
@@ -150,13 +160,13 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 18,
   },
 
   buttonOutlineText: {
     color: "black",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 18,
   },
 
   disabledButton: {
