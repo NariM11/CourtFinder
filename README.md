@@ -91,7 +91,7 @@ Use this space to show useful examples of how a project can be used. Additional 
 ## Contributors
 
 - Nariman Muldashev (Back-end Developer / Product Manager)
-- Kevin Lee (Front-end Developer )
+- Kevin Lee (Front-end Developer / Product Manager )
 - Valeriya Ten (UI/UX Designer)
 - Deewai Abdullahi (Project Mentor)
 
@@ -100,7 +100,7 @@ Use this space to show useful examples of how a project can be used. Additional 
 ## Contact
 
 - Nariman Muldashev - muldashev11@gmail.com
-- Kevin Lee - kevlee.90@gmail.com
+- Kevin Lee - lee.kevin.ck@gmail.com
 - Valeriya Ten - heyvalliet@gmail.com
 
 Project Link: [https://github.com/NariM11/CourtFinder](https://github.com/NariM11/CourtFinder)
