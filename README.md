@@ -70,9 +70,9 @@ To launch the app on your local environment, you will need Node.js, React Native
   ```
 
 - To run a Node.js server, you can follow these steps:
-  Open a terminal or command prompt and navigate to the directory where the server.js file is located.
+  Open a terminal or command prompt and navigate to the directory where the index.js file is located.
   ```sh
-  node server.js
+  node index.js
   ```
 - Installing Postgres
 
