@@ -85,7 +85,7 @@ To launch the app on your local environment, you will need Node.js, React Native
 ## Contributors
 
 - Nariman Muldashev (Back-end Developer / Product Manager)
-- Kevin Lee (Front-end Developer / Product Manager )
+- Kevin Lee (Front-end Developer / Product Manager)
 - Valeriya Ten (UI/UX Designer)
 - Deewai Abdullahi (Project Mentor)
 
