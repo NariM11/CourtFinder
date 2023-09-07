@@ -16,7 +16,7 @@
 
 ## About The Project
 
-[Project Demo GIF]
+Video Demo: https://youtu.be/JbOTHA6d370
 
 **Court Finder** is a full stack mobile application built to help improve the process of finding available public tennis courts.
 
@@ -79,12 +79,6 @@ To launch the app on your local environment, you will need Node.js, React Native
   ```sh
     psql -U postgres
   ```
-
-<!-- USAGE EXAMPLES -->
-
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 <!-- CONTRIBUTORS -->
 
