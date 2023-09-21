@@ -16,7 +16,7 @@
 
 ## About The Project
 
-Video Demo: https://youtu.be/JbOTHA6d370
+Video Demo: https://youtu.be/D9_5EKXAU2c
 
 **Court Finder** is a full stack mobile application built to help improve the process of finding available public tennis courts.
 
